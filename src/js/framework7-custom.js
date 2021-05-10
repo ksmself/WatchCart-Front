@@ -1,4 +1,3 @@
-
 import Framework7, { request, utils, getDevice, createStore } from 'framework7/lite';
 import Appbar from 'framework7/components/appbar';
 import Dialog from 'framework7/components/dialog';
@@ -53,7 +52,7 @@ import TextEditor from 'framework7/components/text-editor';
 import Elevation from 'framework7/components/elevation';
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 
-SwiperCore.use([Navigation, Pagination, Scrollbar, A11y])
+SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
 
 Framework7.use([
   Appbar,
@@ -106,10 +105,8 @@ Framework7.use([
   ColorPicker,
   Treeview,
   TextEditor,
-  Elevation
+  Elevation,
 ]);
 
-
-
 export default Framework7;
-export { request, utils, getDevice, createStore };
+export { request, utils, getDevice };

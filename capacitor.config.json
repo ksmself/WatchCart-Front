@@ -1,0 +1,13 @@
+{
+  "appId": "com.insomenia.practice",
+  "appName": "Practice",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

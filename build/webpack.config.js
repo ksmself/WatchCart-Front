@@ -16,16 +16,14 @@ function resolvePath(dir) {
 const env = process.env.NODE_ENV || 'development';
 const target = process.env.TARGET || 'web';
 
-
-
 module.exports = {
   mode: env,
-  target: env === "development" ? "web" : "browserslist",
+  target: env === 'development' ? 'web' : 'browserslist',
   entry: {
-    app: './src/js/app.js',
+    app: './src/app.ts',
   },
   output: {
-    path: resolvePath('www'),
+    path: resolvePath('../public/www'),
     filename: 'js/[name].[hash].js',
     chunkFilename: 'js/[name].[hash].js',
     publicPath: '',
@@ -33,11 +31,22 @@ module.exports = {
     hotUpdateMainFilename: 'hot/hot-update.json',
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', 'less', '.json'],
     alias: {
-      '@': resolvePath('src'),
+      '@utils': resolvePath('src/common/utils/'),
+      '@components': resolvePath('src/components/'),
+      '@styles': resolvePath('src/assets/styles/'),
+      '@hooks': resolvePath('src/common/hooks/'),
+      '@atoms': resolvePath('src/common/atoms/'),
+      '@api': resolvePath('src/common/api/'),
+      '@selectors': resolvePath('src/common/selectors/'),
+      '@config': resolvePath('src/common/config/'),
+      '@routes': resolvePath('src/common/routes/'),
+      '@constants': resolvePath('src/common/constants/'),
+      '@pages': resolvePath('src/pages/'),
+      '@store': resolvePath('src/common/store/'),
+      '@js': resolvePath('src/js/'),
     },
-
   },
   devtool: env === 'production' ? 'source-map' : 'eval',
   devServer: {
@@ -56,33 +65,44 @@ module.exports = {
     rules: [
       {
         test: /\.(mjs|js|jsx)$/,
-        include: [
-          resolvePath('src'),
-
-        ],
+        include: [resolvePath('src')],
         use: [
           {
             loader: require.resolve('babel-loader'),
-            options: env === 'development' ? {
-              plugins: [
-                require.resolve('react-refresh/babel'),
-              ]
-            } : {}
+            options:
+              env === 'development'
+                ? {
+                    plugins: [require.resolve('react-refresh/babel')],
+                  }
+                : {},
           },
-        ]
+        ],
       },
-
-
-
+      {
+        test: /\.js$/,
+        use: ['source-map-loader'],
+        enforce: 'pre',
+      },
+      {
+        test: /\.tsx?$/,
+        use: [
+          {
+            loader: 'babel-loader',
+          },
+        ],
+        exclude: /node_modules/,
+      },
       {
         test: /\.css$/,
         use: [
-          (env === 'development' ? 'style-loader' : {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '../'
-            }
-          }),
+          env === 'development'
+            ? 'style-loader'
+            : {
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                  publicPath: '../',
+                },
+              },
           'css-loader',
           'postcss-loader',
         ],
@@ -90,12 +110,14 @@ module.exports = {
       {
         test: /\.styl(us)?$/,
         use: [
-          (env === 'development' ? 'style-loader' : {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '../'
-            }
-          }),
+          env === 'development'
+            ? 'style-loader'
+            : {
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                  publicPath: '../',
+                },
+              },
           'css-loader',
           'postcss-loader',
           'stylus-loader',
@@ -104,12 +126,14 @@ module.exports = {
       {
         test: /\.less$/,
         use: [
-          (env === 'development' ? 'style-loader' : {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '../'
-            }
-          }),
+          env === 'development'
+            ? 'style-loader'
+            : {
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                  publicPath: '../',
+                },
+              },
           'css-loader',
           'postcss-loader',
           'less-loader',
@@ -118,12 +142,14 @@ module.exports = {
       {
         test: /\.(sa|sc)ss$/,
         use: [
-          (env === 'development' ? 'style-loader' : {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '../'
-            }
-          }),
+          env === 'development'
+            ? 'style-loader'
+            : {
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                  publicPath: '../',
+                },
+              },
           'css-loader',
           'postcss-loader',
           'sass-loader',
@@ -135,9 +161,8 @@ module.exports = {
         options: {
           limit: 10000,
           name: 'images/[name].[ext]',
-
         },
-        type: 'javascript/auto'
+        type: 'javascript/auto',
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac|m4a)(\?.*)?$/,
@@ -145,9 +170,8 @@ module.exports = {
         options: {
           limit: 10000,
           name: 'media/[name].[ext]',
-
         },
-        type: 'javascript/auto'
+        type: 'javascript/auto',
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
@@ -155,9 +179,8 @@ module.exports = {
         options: {
           limit: 10000,
           name: 'fonts/[name].[ext]',
-
         },
-        type: 'javascript/auto'
+        type: 'javascript/auto',
       },
     ],
   },
@@ -167,25 +190,28 @@ module.exports = {
       'process.env.TARGET': JSON.stringify(target),
     }),
 
-    ...(env === 'production' ? [
-      new CssMinimizerPlugin(),
-    ] : [
-      // Development only plugins
-      new webpack.HotModuleReplacementPlugin(),
-      new ReactRefreshWebpackPlugin(),
-    ]),
+    ...(env === 'production'
+      ? [new CssMinimizerPlugin()]
+      : [
+          // Development only plugins
+          new webpack.HotModuleReplacementPlugin(),
+          new ReactRefreshWebpackPlugin(),
+        ]),
     new HtmlWebpackPlugin({
       filename: './index.html',
       template: './src/index.html',
       inject: true,
-      minify: env === 'production' ? {
-        collapseWhitespace: true,
-        removeComments: true,
-        removeRedundantAttributes: true,
-        removeScriptTypeAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        useShortDoctype: true
-      } : false,
+      minify:
+        env === 'production'
+          ? {
+              collapseWhitespace: true,
+              removeComments: true,
+              removeRedundantAttributes: true,
+              removeScriptTypeAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              useShortDoctype: true,
+            }
+          : false,
     }),
     new MiniCssExtractPlugin({
       filename: 'css/[name].css',
@@ -199,13 +225,13 @@ module.exports = {
         },
       ],
     }),
-    new Dotenv({  
-      path: './.env.'+ env, // load this now instead of the ones in '.env'
+    new Dotenv({
+      path: './.env.' + env, // load this now instead of the ones in '.env'
       safe: true, // load '.env.example' to verify the '.env' variables are all set. Can also be a string to a different file.
       allowEmptyValues: true, // allow empty variables (e.g. `FOO=`) (treat it as empty string, rather than missing)
       systemvars: true, // load all the predefined 'process.env' variables which will trump anything local per dotenv specs.
       silent: true, // hide any errors
-      defaults: false // load '.env.defaults' as the default values if empty.
+      defaults: false, // load '.env.defaults' as the default values if empty.
     }),
   ],
 };
