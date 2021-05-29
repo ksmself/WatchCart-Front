@@ -35,11 +35,9 @@ const PostIndexPage = ({ f7route, f7router }: PageRouteProps) => {
       <List>
         {posts.map((post) => (
           <ListItem
-            onClick={() =>
-              f7router.navigate(`/posts/${post.id}`, {
-                props: { setPosts },
-              })
-            }
+            onClick={() => {
+              f7router.navigate(`/posts/${post.id}`, { props: { setPosts } });
+            }}
             key={post.id}
             title={post.title}
             after={post.user.email.split('@')[0]}

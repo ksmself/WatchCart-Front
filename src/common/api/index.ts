@@ -36,5 +36,6 @@ export const getPosts = (params = null) => API.get<any>('/posts', { params });
 export const getPost = (postId) => API.get<any>(`/posts/${postId}`);
 export const createPost = (params) => API.post('/posts', { post: params });
 export const updatePost = (postId, params) => API.patch(`/posts/${postId}`, { post: params });
+export const destroyPost = (postId) => API.delete(`/posts/${postId}`);
 
 export { API_URL, VERSION };

@@ -1,4 +1,4 @@
-import { getPost } from '@api';
+import { destroyPost, getPost } from '@api';
 import { PageRouteProps } from '@constants';
 import { f7, Navbar, NavRight, Page, Link } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
@@ -20,9 +20,10 @@ const PostShowPage = ({ f7route, f7router, setPosts }: PostShowPageProps) => {
 
   return (
     <Page noToolbar>
-      <Navbar title={post?.title} backLink backLinkForce={true}>
+      <Navbar title={post?.title} backLink={true}>
         <NavRight>
           <Link
+            iconF7="ellipsis"
             onClick={() => {
               f7.dialog
                 .create({
@@ -36,14 +37,26 @@ const PostShowPage = ({ f7route, f7router, setPosts }: PostShowPageProps) => {
                     },
                     {
                       text: '게시글 삭제',
-                      onClick: () => {},
+                      onClick: async () => {
+                        f7.dialog.preloader('게시글 삭제중...');
+                        try {
+                          const { data } = await destroyPost(post.id);
+                          if (data) {
+                            setPosts((posts) => posts.filter((p) => p.id !== post.id));
+                            f7router.back();
+                          }
+                        } catch (e) {
+                          throw new Error(e);
+                        } finally {
+                          f7.dialog.close();
+                        }
+                      },
                     },
                   ],
                   verticalButtons: true,
                 })
                 .open();
             }}
-            iconF7="ellipsis"
           ></Link>
         </NavRight>
       </Navbar>

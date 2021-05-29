@@ -4,7 +4,7 @@ import { Form, Formik } from 'formik';
 import { f7, Navbar, Page, List, ListInput, Button } from 'framework7-react';
 import React from 'react';
 import * as Yup from 'yup';
-import posts from '.';
+import PostForm from './PostForm';
 
 interface PostNewPageProps extends PageRouteProps {
   setPosts: React.Dispatch<React.SetStateAction<any[]>>;
@@ -25,61 +25,7 @@ const PostNewPage = ({ f7route, f7router, setPosts }: PostNewPageProps) => {
 
       <p className="p-3 text-base font-bold">게시글 작성</p>
 
-      <Formik
-        initialValues={{ title: '', content: '' }}
-        validationSchema={PostNewSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          f7.dialog.preloader('게시글 생성중입니다...');
-          await setSubmitting(true);
-          try {
-            const { data } = await createPost(values);
-            if (data) {
-              await setPosts((posts) => [...posts, data]);
-              f7router.back();
-            }
-          } catch (e) {
-            throw new Error(e);
-          } finally {
-            setSubmitting(false);
-            f7.dialog.close();
-          }
-        }}
-        validateOnMount
-      >
-        {({ values, isSubmitting, handleChange, handleBlur, errors, touched, isValid }) => (
-          <Form>
-            <List noHairlinesMd>
-              <ListInput
-                label="제목"
-                type="text"
-                name="title"
-                placeholder="제목을 입력해주세요"
-                value={values.title}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                errorMessageForce
-                errorMessage={touched.title && errors.title}
-              />
-              <ListInput
-                label="내용"
-                type="textarea"
-                name="content"
-                placeholder="내용을 입력해주세요"
-                value={values.content}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                errorMessageForce
-                errorMessage={touched.content && errors.content}
-              />
-              <div className="p-3">
-                <Button type="submit" fill large disabled={isSubmitting || !isValid}>
-                  게시글 작성
-                </Button>
-              </div>
-            </List>
-          </Form>
-        )}
-      </Formik>
+      <PostForm f7router={f7router} setPosts={setPosts} />
     </Page>
   );
 };
