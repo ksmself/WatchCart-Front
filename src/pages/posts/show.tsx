@@ -2,6 +2,7 @@ import { destroyPost, getPost } from '@api';
 import { PageRouteProps, Post } from '@constants';
 import { f7, Navbar, NavRight, Page, Link } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
 interface PostShowPageProps extends PageRouteProps {
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
@@ -9,14 +10,7 @@ interface PostShowPageProps extends PageRouteProps {
 
 const PostShowPage = ({ f7route, f7router, setPosts }: PostShowPageProps) => {
   const postId = f7route.params.id;
-  const [post, setPost] = useState<Post>(null);
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await getPost(postId);
-      setPost(data);
-    })();
-  }, []);
+  const { data: post, status, error } = useQuery<Post>(`posts-${postId}`, getPost(postId));
 
   return (
     <Page noToolbar>
@@ -32,7 +26,7 @@ const PostShowPage = ({ f7route, f7router, setPosts }: PostShowPageProps) => {
                     {
                       text: '게시글 수정',
                       onClick: () => {
-                        f7router.navigate(`/posts/${post.id}/edit`, { props: { setPost, setPosts } });
+                        f7router.navigate(`/posts/${post.id}/edit`);
                       },
                     },
                     {

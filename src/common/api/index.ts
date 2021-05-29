@@ -32,8 +32,14 @@ export const getItems = (params = null) => API.get<any>('/items', { params });
 export const getCategories = (params = null) => API.get<Category[]>('/categories', { params });
 export const getCategory = (id, params = null) => API.get<Category>(`/categories/${id}`, { params });
 
-export const getPosts = (params = null) => API.get<any>('/posts', { params });
-export const getPost = (postId) => API.get<any>(`/posts/${postId}`);
+export const getPosts = () => async (params = null) => {
+  const { data } = await API.get('/posts', { params });
+  return data;
+};
+export const getPost = (postId) => async () => {
+  const { data } = await API.get<any>(`/posts/${postId}`);
+  return data;
+};
 export const createPost = (params) => API.post('/posts', { post: params });
 export const updatePost = (postId, params) => API.patch(`/posts/${postId}`, { post: params });
 export const destroyPost = (postId) => API.delete(`/posts/${postId}`);
