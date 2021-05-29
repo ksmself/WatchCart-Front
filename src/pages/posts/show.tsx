@@ -1,15 +1,15 @@
 import { destroyPost, getPost } from '@api';
-import { PageRouteProps } from '@constants';
+import { PageRouteProps, Post } from '@constants';
 import { f7, Navbar, NavRight, Page, Link } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
 
 interface PostShowPageProps extends PageRouteProps {
-  setPosts: React.Dispatch<React.SetStateAction<any[]>>;
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
 }
 
 const PostShowPage = ({ f7route, f7router, setPosts }: PostShowPageProps) => {
   const postId = f7route.params.id;
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState<Post>(null);
 
   useEffect(() => {
     (async () => {

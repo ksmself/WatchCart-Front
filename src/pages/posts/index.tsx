@@ -1,10 +1,10 @@
 import { getPosts } from '@api';
-import { PageRouteProps } from '@constants';
+import { PageRouteProps, Post } from '@constants';
 import { Navbar, Page, List, ListItem, Fab, Icon } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
 
 const PostIndexPage = ({ f7route, f7router }: PageRouteProps) => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     (async () => {

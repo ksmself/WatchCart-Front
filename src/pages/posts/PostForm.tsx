@@ -1,8 +1,10 @@
 import React, { useRef } from 'react';
 import * as Yup from 'yup';
 import { createPost, updatePost } from '@api';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import { f7, List, ListInput, Button } from 'framework7-react';
+import { Post } from '@constants';
+import { Router } from 'framework7/types';
 
 const PostNewSchema = Yup.object().shape({
   title: Yup.string().required('필수 입력사항입니다.'),
@@ -12,15 +14,31 @@ const PostNewSchema = Yup.object().shape({
     .max(1000, '1000자 미만으로 작성해주셔야합니다'),
 });
 
-const PostForm = ({ setPost = null, setPosts, f7router, post = null }) => {
+interface PostFormProps {
+  setPost?: React.Dispatch<React.SetStateAction<Post>>;
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  f7router: Router.Router;
+  post?: Post;
+}
+
+interface PostFormValue {
+  title: string;
+  content: string;
+}
+
+const PostForm = ({ setPost = null, setPosts, f7router, post = null }: PostFormProps) => {
   const formikRef = useRef(null);
+  const initialValues: PostFormValue = {
+    title: post?.title,
+    content: post?.content,
+  };
 
   return (
     <Formik
-      initialValues={{ title: post?.title, content: post?.content }}
+      initialValues={initialValues}
       validationSchema={PostNewSchema}
       innerRef={formikRef}
-      onSubmit={async (values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting }: FormikHelpers<PostFormValue>) => {
         f7.dialog.preloader(`게시글 ${post ? '수정' : '생성'}중입니다...`);
         await setSubmitting(true);
         try {

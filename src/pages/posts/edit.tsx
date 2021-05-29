@@ -1,18 +1,18 @@
 import { updatePost, getPost } from '@api';
-import { PageRouteProps } from '@constants';
+import { PageRouteProps, Post } from '@constants';
 import { Form, Formik } from 'formik';
 import { f7, Navbar, Page, List, ListInput, Button } from 'framework7-react';
 import React, { useEffect, useRef, useState } from 'react';
 import PostForm from './PostForm';
 
 interface PostEditPageProps extends PageRouteProps {
-  setPost: React.Dispatch<React.SetStateAction<any[]>>;
-  setPosts: React.Dispatch<React.SetStateAction<any[]>>;
+  setPost: React.Dispatch<React.SetStateAction<Post>>;
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
 }
 
 const PostEditPage = ({ f7route, f7router, setPost, setPosts }: PostEditPageProps) => {
   const postId = f7route.params.id;
-  const [post, setEditPost] = useState(null);
+  const [post, setEditPost] = useState<Post>(null);
 
   useEffect(() => {
     (async () => {
