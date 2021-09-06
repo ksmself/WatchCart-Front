@@ -32,6 +32,8 @@ export const getItems = (params = null) => API.get<any>('/items', { params });
 export const getCategories = (params = null) => API.get<Category[]>('/categories', { params });
 export const getCategory = (id, params = null) => API.get<Category>(`/categories/${id}`, { params });
 
+export const getMovies = (categoryId, params = null) => API.get(`/movies?q[category_id_eq]=${categoryId}`, { params });
+
 export const getPosts = () => async (params = null) => {
   const { data } = await API.get('/posts', { params });
   return data;

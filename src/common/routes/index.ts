@@ -10,12 +10,16 @@ import PostEditPage from '@pages/posts/edit';
 import MyPage from '@pages/mypage';
 import SignUpPage from '@pages/users/registrations/new';
 import LoginPage from '@pages/users/sessions/new';
+import CategoryIndexPage from '@pages/categories/index';
+import StarPage from '@pages/star';
 
 const routes = [
   { path: '/', component: HomePage },
   { path: '/users/sign_in', component: LoginPage },
   { path: '/users/sign_up', component: SignUpPage },
   { path: '/intro', component: IntroPage },
+  { path: '/categories', component: CategoryIndexPage },
+  { path: '/star', component: StarPage },
   { path: '/mypage', component: MyPage },
   { path: '/items', component: ItemIndexPage },
   { path: '/items/:id', component: ItemShowPage },

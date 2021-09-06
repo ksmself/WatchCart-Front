@@ -1,9 +1,15 @@
-import { Button, f7ready, Navbar, Page, Swiper, SwiperSlide, Toolbar } from 'framework7-react';
+import { f7ready, Page, Toolbar, BlockTitle, Swiper, SwiperSlide, Block } from 'framework7-react';
 import { sampleSize, zip } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import sanitizeHtml from '../js/utils/sanitizeHtml';
+// import sanitizeHtml from '../js/utils/sanitizeHtml';
+
+import TopNavBar from '@components/TopNavBar';
+import BottomToolBarContent from '@components/BottomToolBarContent';
+import { getCategories, getMovies } from '@api';
+import RowSwiper from '@components/Swiper/RowSwiper';
 
 const IntroPage = (props) => {
+  const [categories, setCategories] = useState(null);
   const [slides, setSlides] = useState([]);
   const images: string[] = [
     'couple',
@@ -59,10 +65,29 @@ const IntroPage = (props) => {
     });
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      const { data } = await getCategories();
+      setCategories(data);
+    })();
+  }, []);
+
   return (
-    <Page>
-      <Navbar className="hidden" />
-      <Toolbar bottom className="p-0" inner={false}>
+    <Page className="theme-dark">
+      <TopNavBar />
+      <div className="container-box">
+        {categories?.map((category) => (
+          <div className="category-box" key={category?.id}>
+            <BlockTitle>{category?.title}</BlockTitle>
+            <RowSwiper categoryId={category?.id} />
+          </div>
+        ))}
+        <Block />
+      </div>
+      <Toolbar tabbar labels position="bottom">
+        <BottomToolBarContent />
+      </Toolbar>
+      {/* <Toolbar bottom className="p-0" inner={false}>
         <div className="w-full flex">
           <Button className="w-full rounded-none" large href="/users/sign_in">
             로그인
@@ -71,8 +96,8 @@ const IntroPage = (props) => {
             회원가입
           </Button>
         </div>
-      </Toolbar>
-      <Swiper
+      </Toolbar> */}
+      {/* <Swiper
         className="h-full"
         spaceBetween={30}
         slidesPerView={1}
@@ -89,7 +114,7 @@ const IntroPage = (props) => {
             {sanitizeHtml(item[1], { className: 'text-lg text-center pt-4' })}
           </SwiperSlide>
         ))}
-      </Swiper>
+      </Swiper> */}
     </Page>
   );
 };

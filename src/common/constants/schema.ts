@@ -28,6 +28,17 @@ export interface Image extends DefaultProps {
   image_path: string;
 }
 
+export interface Movie extends DefaultProps {
+  title: string;
+  description: string;
+  stars: number;
+  year: number;
+  category_id: number;
+  director_id: number;
+  image_path: string;
+  category?: Category;
+}
+
 export interface Item extends DefaultProps {
   user_id: number;
   category_id: number;

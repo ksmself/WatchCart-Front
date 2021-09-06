@@ -5,6 +5,7 @@ import Framework7 from '@js/framework7-custom';
 import '@styles/framework7-custom.less';
 import '@styles/icons.css';
 import '@styles/app.less';
+import '@styles/custom.css';
 import App from '@components/App';
 import i18n from './assets/lang/i18n';
 
