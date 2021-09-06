@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Swiper, SwiperSlide } from 'framework7-react';
+import { Swiper, SwiperSlide, Link } from 'framework7-react';
 
 import { getMovies } from '@api';
 
-const RowSwiper = ({ categoryId }) => {
+const RowSwiper = ({ categoryId, f7router }) => {
   const [movies, setMovies] = useState(null);
 
   useEffect(() => {
@@ -18,8 +18,10 @@ const RowSwiper = ({ categoryId }) => {
     <Swiper navigation speed={500} slidesPerView={3} spaceBetween={20}>
       {movies?.map((movie) => (
         <SwiperSlide key={movie?.id}>
-          <img src={movie?.image_path} alt={movie?.title} />
-          <div>{movie?.title}</div>
+          <Link href={`/movies/${movie?.id}`} className="movie-link">
+            <img src={`http://localhost:3000${movie?.image_path}`} alt={movie?.title} />
+            <div>{movie?.title}</div>
+          </Link>
         </SwiperSlide>
       ))}
     </Swiper>

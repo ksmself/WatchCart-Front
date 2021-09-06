@@ -12,6 +12,7 @@ import SignUpPage from '@pages/users/registrations/new';
 import LoginPage from '@pages/users/sessions/new';
 import CategoryIndexPage from '@pages/categories/index';
 import StarPage from '@pages/star';
+import MovieShowPage from '@pages/movies/show';
 
 const routes = [
   { path: '/', component: HomePage },
@@ -23,6 +24,7 @@ const routes = [
   { path: '/mypage', component: MyPage },
   { path: '/items', component: ItemIndexPage },
   { path: '/items/:id', component: ItemShowPage },
+  { path: '/movies/:id', component: MovieShowPage },
   { path: '/posts', component: PostIndexPage },
   { path: '/posts/new', component: PostNewPage },
   { path: '/posts/:id', component: PostShowPage },

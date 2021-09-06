@@ -3,11 +3,34 @@
 }
 
 .container-box {
-  padding: 10px;
+  padding: 20px 15px;
 }
 
 .category-box {
   margin-bottom: 15px;
+}
+
+.block-title {
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.movie-link {
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-link img {
+  margin-bottom: 7px;
+}
+
+.movie-link div {
+  display: -webkit-box;
+  width: 100%;
+  font-size: 10px;
+  /*2줄로 제한*/
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .toolbar-flex {

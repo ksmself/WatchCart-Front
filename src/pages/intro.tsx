@@ -78,7 +78,7 @@ const IntroPage = (props) => {
       <div className="container-box">
         {categories?.map((category) => (
           <div className="category-box" key={category?.id}>
-            <BlockTitle>{category?.title}</BlockTitle>
+            <BlockTitle className="block-title">{category?.title}</BlockTitle>
             <RowSwiper categoryId={category?.id} />
           </div>
         ))}
