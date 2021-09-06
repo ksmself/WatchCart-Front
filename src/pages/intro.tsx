@@ -85,7 +85,7 @@ const IntroPage = (props) => {
         <Block />
       </div>
       <Toolbar tabbar labels position="bottom">
-        <BottomToolBarContent />
+        <BottomToolBarContent currentIdx={0} />
       </Toolbar>
       {/* <Toolbar bottom className="p-0" inner={false}>
         <div className="w-full flex">

@@ -4,11 +4,11 @@ import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
 
 const CategoryIndexPage = () => (
-  <Page name="categorypage">
+  <Page className="theme-dark">
     <TopNavBar backLink={true} />
     <div className="py-10">This is CategoryPage</div>
     <Toolbar tabbar labels position="bottom">
-      <BottomToolBarContent />
+      <BottomToolBarContent currentIdx={1} />
     </Toolbar>
   </Page>
 );
