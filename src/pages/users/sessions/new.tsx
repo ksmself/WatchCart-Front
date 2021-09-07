@@ -1,7 +1,8 @@
 import { loginAPI } from '@api';
+import TopNavBar from '@components/TopNavBar';
 import useAuth from '@hooks/useAuth';
 import { Formik, FormikHelpers } from 'formik';
-import { f7, List, ListInput, Navbar, Page } from 'framework7-react';
+import { f7, Link, List, ListInput, Navbar, Page } from 'framework7-react';
 import React from 'react';
 import * as Yup from 'yup';
 
@@ -33,9 +34,7 @@ const SessionNewPage = () => {
   };
 
   return (
-    <Page className="bg-white">
-      <Navbar title={i18next.t('login.title')} backLink sliding={false} />
-      <p className="font-semibole text-4xl text-center mt-5">insomenia</p>
+    <>
       <Formik
         initialValues={initialValues}
         validationSchema={SignInSchema}
@@ -43,7 +42,7 @@ const SessionNewPage = () => {
         validateOnMount
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, isValid }) => (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} class="login-form">
             <List>
               <ListInput
                 label={i18next.t('login.email')}
@@ -70,10 +69,10 @@ const SessionNewPage = () => {
                 errorMessage={touched.password && errors.password}
               />
             </List>
-            <div className="p-1">
+            <div>
               <button
                 type="submit"
-                className="button button-fill button-large disabled:opacity-50"
+                className="button button-fill button-large disabled:opacity-50 login-button"
                 disabled={isSubmitting || !isValid}
               >
                 로그인
@@ -82,7 +81,11 @@ const SessionNewPage = () => {
           </form>
         )}
       </Formik>
-    </Page>
+      <div className="for-sign-up">
+        <span>아직 회원이 아니신가요?</span>
+        <Link href="/users/sign_up">회원가입하러가기</Link>
+      </div>
+    </>
   );
 };
 
