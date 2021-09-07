@@ -41,6 +41,7 @@ const F7Views = () => {
     return <LandingPage />;
   }
 
+  /*
   const loggedInViews = () => (
     <Views tabs className="safe-areas">
       <Toolbar tabbar labels bottom>
@@ -57,6 +58,8 @@ const F7Views = () => {
       <View id="view-mypage" stackPages name="mypage" tab url="/mypage?is_main=true" />
     </Views>
   );
+  */
+  const loggedInViews = () => <View id="view-intro" main url="/" />;
 
   const loggedOutViews = () => <View id="view-intro" main url="/intro" />;
 

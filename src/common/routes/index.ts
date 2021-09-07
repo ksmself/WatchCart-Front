@@ -17,7 +17,7 @@ import DirectorShowPage from '@pages/directors/show';
 import ActorShowPage from '@pages/actors/show';
 
 const routes = [
-  { path: '/', component: HomePage },
+  { path: '/', component: IntroPage },
   { path: '/users/sign_in', component: LoginPage },
   { path: '/users/sign_up', component: SignUpPage },
   { path: '/intro', component: IntroPage },

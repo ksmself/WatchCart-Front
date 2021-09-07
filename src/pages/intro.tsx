@@ -87,16 +87,6 @@ const IntroPage = (props) => {
       <Toolbar tabbar labels position="bottom">
         <BottomToolBarContent currentIdx={0} />
       </Toolbar>
-      {/* <Toolbar bottom className="p-0" inner={false}>
-        <div className="w-full flex">
-          <Button className="w-full rounded-none" large href="/users/sign_in">
-            로그인
-          </Button>
-          <Button className="w-full rounded-none" large href="/users/sign_up" fill>
-            회원가입
-          </Button>
-        </div>
-      </Toolbar> */}
       {/* <Swiper
         className="h-full"
         spaceBetween={30}

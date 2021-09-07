@@ -42,7 +42,7 @@ const SessionNewPage = () => {
         validateOnMount
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, isValid }) => (
-          <form onSubmit={handleSubmit} class="login-form">
+          <form onSubmit={handleSubmit} className="login-form">
             <List>
               <ListInput
                 label={i18next.t('login.email')}

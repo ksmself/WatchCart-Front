@@ -1,9 +1,10 @@
 import { signupAPI } from '@api';
+import TopNavBar from '@components/TopNavBar';
 import useAuth from '@hooks/useAuth';
 import { sleep } from '@utils';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { f7, List, ListInput, Navbar, Page } from 'framework7-react';
-import React from 'react';
+import { f7, List, ListInput, Page } from 'framework7-react';
+import React, { useEffect } from 'react';
 import * as Yup from 'yup';
 
 interface FormValues {
@@ -20,11 +21,12 @@ const SignUpSchema = Yup.object().shape({
   password_confirmation: Yup.string()
     .min(4, '길이가 너무 짧습니다')
     .max(50, '길이가 너무 깁니다')
-    .required('필수 입력사항 입니다'),
+    .required('필수 입력사항 입니다')
+    .oneOf([Yup.ref('password'), null], '비밀번호를 다시 확인해주세요'),
 });
 
-const SignUpPage = () => {
-  const { authenticateUser } = useAuth();
+const SignUpPage = ({ f7router }) => {
+  const { authenticateUser, isAuthenticated } = useAuth();
   const initialValues: FormValues = {
     name: '',
     email: '',
@@ -32,10 +34,15 @@ const SignUpPage = () => {
     password_confirmation: '',
   };
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      f7router.navigate('/mypage');
+    }
+  }, [isAuthenticated]);
+
   return (
-    <Page>
-      <Navbar title="회원가입" backLink sliding={false} />
-      <p className="font-semibole text-4xl text-center mt-5">insomenia</p>
+    <Page className="theme-dark">
+      <TopNavBar backLink={true} />
       <Formik
         initialValues={initialValues}
         validationSchema={SignUpSchema}
@@ -55,9 +62,8 @@ const SignUpPage = () => {
         validateOnMount
       >
         {({ handleChange, handleBlur, values, errors, touched, isSubmitting, isValid }) => (
-          <Form>
+          <Form className="login-form">
             <List noHairlinesMd>
-              <div className="p-3 font-semibold bg-white">기본 정보</div>
               <ListInput
                 label={i18next.t('login.name')}
                 type="text"
@@ -111,7 +117,7 @@ const SignUpPage = () => {
             <div className="p-4">
               <button
                 type="submit"
-                className="button button-fill button-large disabled:opacity-50"
+                className="button button-fill button-large disabled:opacity-50 login-button"
                 disabled={isSubmitting || !isValid}
               >
                 회원가입
