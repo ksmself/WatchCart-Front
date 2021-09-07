@@ -13,6 +13,8 @@ import LoginPage from '@pages/users/sessions/new';
 import CategoryIndexPage from '@pages/categories/index';
 import StarPage from '@pages/star';
 import MovieShowPage from '@pages/movies/show';
+import DirectorShowPage from '@pages/directors/show';
+import ActorShowPage from '@pages/actors/show';
 
 const routes = [
   { path: '/', component: HomePage },
@@ -25,6 +27,8 @@ const routes = [
   { path: '/items', component: ItemIndexPage },
   { path: '/items/:id', component: ItemShowPage },
   { path: '/movies/:id', component: MovieShowPage },
+  { path: '/directors/:id', component: DirectorShowPage },
+  { path: '/actors/:id', component: ActorShowPage },
   { path: '/posts', component: PostIndexPage },
   { path: '/posts/new', component: PostNewPage },
   { path: '/posts/:id', component: PostShowPage },

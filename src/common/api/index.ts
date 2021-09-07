@@ -33,6 +33,12 @@ export const getCategories = (params = null) => API.get<Category[]>('/categories
 export const getCategory = (id, params = null) => API.get<Category>(`/categories/${id}`, { params });
 
 export const getMovies = (categoryId, params = null) => API.get(`/movies?q[category_id_eq]=${categoryId}`, { params });
+export const getMovie = (movieId) => API.get(`/movies/${movieId}`);
+
+export const getDirector = (directorId) => API.get(`/directors/${directorId}`);
+export const getPlays = (movieId) => API.get(`/plays?q[movie_id_eq]=${movieId}`);
+export const getActor = (actorId) => API.get(`/actors/${actorId}`);
+export const getActors = (actorId) => API.get(`/actors/${actorId}`);
 
 export const getPosts = () => async (params = null) => {
   const { data } = await API.get('/posts', { params });

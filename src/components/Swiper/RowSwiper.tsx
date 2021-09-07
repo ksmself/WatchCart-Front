@@ -9,7 +9,6 @@ const RowSwiper = ({ categoryId, f7router }) => {
   useEffect(() => {
     (async () => {
       const { data } = await getMovies(categoryId);
-      console.log(data);
       setMovies(data);
     })();
   }, []);
