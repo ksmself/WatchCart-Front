@@ -3,6 +3,7 @@ import { API_URL, getCategories } from '@api';
 import { Link, SkeletonBlock, SkeletonText } from 'framework7-react';
 // import { useQuery } from 'react-query';
 import { Category } from '@constants';
+import { useQuery } from 'react-query';
 
 // const categoriesSkeletonPlaceholder = (size) => new Array(size).fill({});
 

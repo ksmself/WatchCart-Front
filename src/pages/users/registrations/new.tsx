@@ -1,7 +1,7 @@
 import { signupAPI } from '@api';
 import TopNavBar from '@components/TopNavBar';
 import useAuth from '@hooks/useAuth';
-import { sleep } from '@utils';
+import { getCurrentUserFromToken, sleep } from '@utils';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { f7, List, ListInput, Page } from 'framework7-react';
 import React, { useEffect } from 'react';

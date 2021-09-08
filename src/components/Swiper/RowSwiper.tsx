@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide, Link } from 'framework7-react';
+import { useQuery } from 'react-query';
 
 import { getMovies, API_URL } from '@api';
 
 const RowSwiper = ({ categoryId, f7router }) => {
+  const { data, status, error } = useQuery('movies', getMovies(categoryId));
   const [movies, setMovies] = useState(null);
 
   useEffect(() => {

@@ -157,3 +157,67 @@
 .for-sign-up > a {
   text-decoration: underline;
 }
+
+/* My Page */
+.user-info-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 12px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  width: 230px;
+  overflow: hidden;
+}
+
+.user-info > i {
+  margin-right: 18px;
+  font-size: 52px;
+}
+
+.user-info > span {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.logout-btn {
+  width: 80px;
+  /* height: 24px; */
+  padding: 3px 2px;
+  border: 2px solid lightslategray;
+  border-radius: 16px;
+  color: lightslategray;
+}
+
+.tabLink-box {
+  display: flex;
+  justify-content: space-evenly;
+  /* padding: 10px 0; */
+  /* background-color: rgb(33, 34, 35); */
+}
+
+.tabLink-box a {
+  padding: 8px 8px;
+  font-weight: 700;
+  font-size: 13px;
+  border: 2px solid grey;
+  border-radius: 20px;
+  background-color: rgb(33, 34, 35);
+}
+
+.tabLink-box > .tab-link-active {
+  border: 2px solid #f82f62;
+  background-color: #f82f62;
+}
+
+.tab-box {
+  padding: 10px;
+}
+
+/* 정보 수정 */
+.tab-active .login-form {
+  margin-top: 0;
+}

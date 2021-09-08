@@ -16,7 +16,9 @@ export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: any) => PlainAPI.post('/login', { user: params });
 export const signupAPI = (params: any) => PlainAPI.post('/signup', { user: params });
 export const logoutAPI = () => API.delete('/logout');
-
+export const updateUser = (userId, params) => {
+  API.patch(`/users/${userId}`, { user: params });
+};
 // export const {
 //   query: getItems,
 //   get: getItem,
@@ -29,10 +31,20 @@ export const logoutAPI = () => API.delete('/logout');
 // export const { query: getCategories, get: getCategory } = ApiService('categories');
 
 export const getItems = (params = null) => API.get<any>('/items', { params });
-export const getCategories = (params = null) => API.get<Category[]>('/categories', { params });
-export const getCategory = (id, params = null) => API.get<Category>(`/categories/${id}`, { params });
+export const getCategories = (params = null) => async () => {
+  const { data } = await API.get<Category[]>('/categories', { params });
+  return data;
+};
+export const getCategory = (id, params = null) => async () => {
+  const { data } = await API.get<Category>(`/categories/${id}`, { params });
+  return data;
+};
 
-export const getMovies = (categoryId, params = null) => API.get(`/movies?q[category_id_eq]=${categoryId}`, { params });
+export const getMovies = (categoryId, params = null) => async () => {
+  const { data } = await API.get(`/movies?q[category_id_eq]=${categoryId}`, { params });
+  return data;
+};
+
 export const getMovie = (movieId) => API.get(`/movies/${movieId}`);
 
 export const getDirector = (directorId) => API.get(`/directors/${directorId}`);
@@ -49,7 +61,9 @@ export const getPost = (postId) => async () => {
   return data;
 };
 export const createPost = (params) => API.post('/posts', { post: params });
+
 export const updatePost = (postId, params) => API.patch(`/posts/${postId}`, { post: params });
+
 export const destroyPost = (postId) => API.delete(`/posts/${postId}`);
 
 export { API_URL, VERSION };

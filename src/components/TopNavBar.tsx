@@ -1,6 +1,5 @@
 import React from 'react';
 import { Navbar, NavLeft, Link, NavTitle, NavRight } from 'framework7-react';
-import { title } from './styles';
 
 const TopNavBar = ({ backLink }) => (
   <Navbar className="theme-dark">
