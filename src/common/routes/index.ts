@@ -15,6 +15,7 @@ import StarPage from '@pages/star';
 import MovieShowPage from '@pages/movies/show';
 import DirectorShowPage from '@pages/directors/show';
 import ActorShowPage from '@pages/actors/show';
+import CategoryShowPage from '@pages/categories/show';
 
 const routes = [
   { path: '/', component: IntroPage },
@@ -22,6 +23,7 @@ const routes = [
   { path: '/users/sign_up', component: SignUpPage },
   { path: '/intro', component: IntroPage },
   { path: '/categories', component: CategoryIndexPage },
+  { path: '/categories/:id', component: CategoryShowPage },
   { path: '/star', component: StarPage },
   { path: '/mypage', component: MyPage },
   { path: '/items', component: ItemIndexPage },

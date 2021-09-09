@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, NavLeft, Link, NavTitle, NavRight } from 'framework7-react';
 
-const TopNavBar = ({ backLink }) => (
+const TopNavBar = ({ backLink, optionName }) => (
   <Navbar className="theme-dark">
     {!backLink && (
       <>
@@ -15,6 +15,7 @@ const TopNavBar = ({ backLink }) => (
       </>
     )}
     {backLink && <NavLeft backLink="Back" className="back" />}
+    {optionName && <NavTitle className="title">{optionName}</NavTitle>}
   </Navbar>
 );
 

@@ -153,6 +153,24 @@
   color: #f82f62;
 }
 
+.colswiper-block {
+  padding: 0 16px;
+}
+
+.colswiper-row {
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+
+.colswiper-col a {
+  width: 100%;
+}
+
+.colswiper-col img {
+  width: 100%;
+  height: 100px;
+}
+
 /* LogIn Page */
 .login-form {
   width: 90%;
