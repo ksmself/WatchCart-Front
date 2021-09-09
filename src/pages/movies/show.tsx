@@ -3,80 +3,79 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
-import { API_URL, getMovie, getDirector, getPlays, getActors } from '@api';
-// import { PageRouteProps } from '@constants';
+import { API_URL, getMovie, getDirector } from '@api';
+import { useQuery } from 'react-query';
 
 const MovieShowPage = ({ f7route }) => {
   const movieId = f7route.params.id;
-  const [movie, setMovie] = useState(null);
-  const [director, setDirector] = useState(null);
-  const [actorIds, setActorIds] = useState([]);
-  const [actors, setActors] = useState([]);
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await getMovie(movieId);
-      setMovie(data);
-    })();
-  }, [movieId]);
+  const { data: movie, status: movieStatus, error: movieError } = useQuery(`movie-${movieId}`, getMovie(movieId));
 
-  useEffect(() => {
-    (async () => {
-      const directorId = movie?.director_id;
-      if (directorId !== undefined) {
-        const { data } = await getDirector(directorId);
-        setDirector(data);
-      }
-    })();
-  }, [movie]);
+  const directorId = movie?.director_id;
+  const { data: director, status: directorStatus, error: directorError } = useQuery(
+    [`director-${directorId}`, directorId],
+    getDirector(directorId),
+    { enabled: !!directorId },
+  );
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await getPlays(movieId);
-      const onlyActorIds = data.map((d) => d.actor_id);
-      setActorIds(onlyActorIds);
-    })();
-  }, [movieId]);
+  const actors = movie?.played_actors;
 
-  useEffect(() => {
-    actorIds?.map((id) => {
-      (async () => {
-        const { data } = await getActors(id);
-        setActors((oldActors) => [...oldActors, data]);
-      })();
-    });
-  }, [actorIds]);
+  const onClickLike = useCallback(() => {
+    console.log('보고 싶어요 클릭됨');
+  }, []);
 
   return (
     <Page className="theme-dark">
       <TopNavBar backLink={true} />
-      <div className="movie-container">
-        <img src={`${API_URL}${movie?.image_path}`} alt={movie?.title} />
-        <div>
-          <span className="star-container">
-            <span>평균</span>
-            <Icon f7="star_fill" size="13px" color="#f82f62"></Icon>
-            <span>{movie?.stars}</span>
-          </span>
-        </div>
-        <div className="movie-title">{movie?.title}</div>
-        <div className="movie-year">{movie?.year}</div>
-        <div className="movie-desc">{movie?.description}</div>
-        <div className="movie-director">
-          <span>감독: </span>
-          <Link href={`/directors/${director?.id}`}>{director?.name}</Link>
-        </div>
-        <div className="movie-actor">
-          <span>출연: </span>
+      {movieStatus === 'loading' && <div>Loading...</div>}
+      {movieStatus === 'error' && <div>{movieError}</div>}
+      {movie && (
+        <div className="movie-container">
+          <img src={`${API_URL}${movie?.image_path}`} alt={movie?.title} />
           <div>
-            {actors?.map((actor) => (
-              <Link href={`/actors/${actor?.id}`} key={actor.id}>
-                {actor.name}
-              </Link>
-            ))}
+            <span className="star-container">
+              <span>평균</span>
+              <Icon f7="star_fill" size="13px" color="#f82f62" />
+              <span>{movie?.stars}</span>
+            </span>
+          </div>
+          <div className="movie-title">{movie?.title}</div>
+          <div className="movie-year">{movie?.year}</div>
+          <div className="movie-desc">{movie?.description}</div>
+          {directorStatus === 'loading' && <div>Loading...</div>}
+          {directorStatus === 'error' && <div>{directorError}</div>}
+          {director && (
+            <div className="movie-director">
+              <span>감독: </span>
+              <Link href={`/directors/${director?.id}`}>{director?.name}</Link>
+            </div>
+          )}
+          <div className="movie-actor">
+            <div>
+              출연:&nbsp;
+              {actors?.map((actor) => (
+                <Link href={`/actors/${actor?.id}`} key={actor.id}>
+                  {actor.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className="movie-btn">
+            <div>
+              <Link iconF7="plus" className="plus" onClick={onClickLike} />
+              <span>보고싶어요</span>
+            </div>
+            <div>
+              <Link iconF7="cart_badge_plus" onClick={() => console.log('구매하기')} />
+              <span>구매하기</span>
+            </div>
+            <div>
+              <Link iconF7="star" className="star" onClick={() => console.log('평가하기')} />
+              <span>평가하기</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <Toolbar tabbar labels position="bottom">
         <BottomToolBarContent currentIdx={0} />
       </Toolbar>

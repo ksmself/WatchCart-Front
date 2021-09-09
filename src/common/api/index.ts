@@ -54,16 +54,7 @@ export const getDirector = (directorId) => async () => {
   const { data } = await API.get(`/directors/${directorId}`);
   return data;
 };
-export const getPlays = (movieId) => async () => {
-  const { data } = await API.get(`/plays?q[movie_id_eq]=${movieId}`);
-  return data;
-};
-// export const getActor = (actorId) => async () => {
-//   const { data } = await API.get(`/actors/${actorId}`);
-//   return data;
-// };
-export const getActor = (actorId) => API.get(`/actors/${actorId}`);
-export const getActors = (actorId) => async () => {
+export const getActor = (actorId) => async () => {
   const { data } = await API.get(`/actors/${actorId}`);
   return data;
 };
