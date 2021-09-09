@@ -53,7 +53,7 @@
 
 /* Movie/:id Page */
 .movie-container {
-  margin: 10px 12px 20px;
+  margin: 10px 12px 30px;
 }
 
 .movie-container img {
@@ -96,6 +96,7 @@
 
 .movie-actor {
   color: grey;
+  margin-bottom: 24px;
 }
 
 .movie-actor div {
@@ -113,6 +114,22 @@
   display: none;
 }
 
+.movie-btn {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 30px;
+}
+
+.movie-btn > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.movie-btn > div > a {
+  margin-bottom: 10px;
+}
+
 /* TopNavBar */
 .back > i {
   margin-right: 10px;
@@ -120,6 +137,20 @@
 
 .back > span {
   font-weight: 700;
+}
+
+/* CategoryList Page */
+#category-list {
+  margin-top: 0;
+}
+
+/* Category Page */
+#category-title {
+  display: flex;
+  justify-content: center;
+  padding: 30px 20px 10px;
+  font-size: 18px;
+  color: #f82f62;
 }
 
 /* LogIn Page */
