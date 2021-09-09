@@ -30,9 +30,9 @@ export const updateUser = (userId, params) => {
 // export const { query: getUsers, get: getUser } = ApiService('users');
 // export const { query: getCategories, get: getCategory } = ApiService('categories');
 
-export const getItems = (params = null) => API.get<any>('/items', { params });
-export const getCategories = (params = null) => async () => {
-  const { data } = await API.get<Category[]>('/categories', { params });
+// export const getItems = (params = null) => API.get<any>('/items', { params });
+export const getCategories = () => async () => {
+  const { data } = await API.get<Category[]>('/categories');
   return data;
 };
 export const getCategory = (id, params = null) => async () => {
@@ -40,17 +40,33 @@ export const getCategory = (id, params = null) => async () => {
   return data;
 };
 
-export const getMovies = (categoryId, params = null) => async () => {
-  const { data } = await API.get(`/movies?q[category_id_eq]=${categoryId}`, { params });
+export const getMovies = (categoryId) => async () => {
+  const { data } = await API.get(`/movies?q[category_id_eq]=${categoryId}`);
   return data;
 };
 
-export const getMovie = (movieId) => API.get(`/movies/${movieId}`);
+export const getMovie = (movieId) => async () => {
+  const { data } = await API.get(`/movies/${movieId}`);
+  return data;
+};
 
-export const getDirector = (directorId) => API.get(`/directors/${directorId}`);
-export const getPlays = (movieId) => API.get(`/plays?q[movie_id_eq]=${movieId}`);
+export const getDirector = (directorId) => async () => {
+  const { data } = await API.get(`/directors/${directorId}`);
+  return data;
+};
+export const getPlays = (movieId) => async () => {
+  const { data } = await API.get(`/plays?q[movie_id_eq]=${movieId}`);
+  return data;
+};
+// export const getActor = (actorId) => async () => {
+//   const { data } = await API.get(`/actors/${actorId}`);
+//   return data;
+// };
 export const getActor = (actorId) => API.get(`/actors/${actorId}`);
-export const getActors = (actorId) => API.get(`/actors/${actorId}`);
+export const getActors = (actorId) => async () => {
+  const { data } = await API.get(`/actors/${actorId}`);
+  return data;
+};
 
 export const getPosts = () => async (params = null) => {
   const { data } = await API.get('/posts', { params });
