@@ -10,11 +10,6 @@ import ColSwiper from '@components/Swiper/ColSwiper';
 const CategoryShowPage = ({ f7route }) => {
   const categoryId = f7route.params.id;
   const { data: category, status, error } = useQuery(`categories-${categoryId}`, getCategory(categoryId));
-  // const { data: movie, status: movieStatus, error: movieError } = useQuery(
-  //   `movies-${categoryId}`,
-  //   getMovies(categoryId),
-  // );
-  // const movie = category.map((c) => )
 
   return (
     <Page className="theme-dark grid-demo">
