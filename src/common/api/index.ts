@@ -59,6 +59,23 @@ export const getActor = (actorId) => async () => {
   return data;
 };
 
+export const likeMovie = (movieId) => {
+  API.post(`/movies/${movieId}/like`);
+};
+
+export const isLiked = (movieId) => async () => {
+  const { data } = await API.get(`/movies/${movieId}/like`);
+  return data;
+};
+
+/*
+export const unlikeMovie = (movieId, params) => async () => {
+  const { data } = await API.post(`/movies/${movieId}/like`, { params });
+  return data;
+};
+*/
+
+/*
 export const getPosts = () => async (params = null) => {
   const { data } = await API.get('/posts', { params });
   return data;
@@ -72,5 +89,6 @@ export const createPost = (params) => API.post('/posts', { post: params });
 export const updatePost = (postId, params) => API.patch(`/posts/${postId}`, { post: params });
 
 export const destroyPost = (postId) => API.delete(`/posts/${postId}`);
+*/
 
 export { API_URL, VERSION };

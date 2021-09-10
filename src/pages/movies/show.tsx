@@ -1,15 +1,32 @@
-import { Page, Toolbar, Icon, Link } from 'framework7-react';
+import {
+  Page,
+  Toolbar,
+  Icon,
+  Link,
+  f7,
+  Button,
+  Popup,
+  Navbar,
+  NavRight,
+  ListItem,
+  List,
+  App,
+  Stepper,
+} from 'framework7-react';
 import React, { useState, useEffect, useCallback } from 'react';
 
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
-import { API_URL, getMovie, getDirector } from '@api';
+import { API_URL, getMovie, getDirector, likeMovie, isLiked } from '@api';
 import { useQuery } from 'react-query';
+import useAuth from '@hooks/useAuth';
 
 const MovieShowPage = ({ f7route }) => {
   const movieId = f7route.params.id;
+  const { isAuthenticated, currentUser } = useAuth();
 
   const { data: movie, status: movieStatus, error: movieError } = useQuery(`movie-${movieId}`, getMovie(movieId));
+  const { data: liked, status: likeStatus, error: likeError } = useQuery(`like-${movieId}`, isLiked(movieId));
 
   const directorId = movie?.director_id;
   const { data: director, status: directorStatus, error: directorError } = useQuery(
@@ -19,10 +36,28 @@ const MovieShowPage = ({ f7route }) => {
   );
 
   const actors = movie?.played_actors;
+  const options = movie?.options;
 
-  const onClickLike = useCallback(() => {
-    console.log('보고 싶어요 클릭됨');
+  const onClickLike = useCallback(async () => {
+    if (!isAuthenticated) {
+      f7.dialog.alert('로그인 후에 보고싶어요를 클릭해주세요!');
+    } else {
+      try {
+        await likeMovie(movieId);
+      } catch (err) {
+        throw new Error(err);
+      }
+    }
+  }, [isAuthenticated]);
+
+  const onClickBuy = useCallback(() => {
+    /**
+     * 로그인되어있지 않다면 일단 장바구니에 넣어놓고
+     * 로그인 하는 순간 그 정보를 user의 장바구니로
+     */
   }, []);
+
+  const selected = { name: 'cgv', price: '7000' };
 
   return (
     <Page className="theme-dark">
@@ -62,11 +97,11 @@ const MovieShowPage = ({ f7route }) => {
           </div>
           <div className="movie-btn">
             <div>
-              <Link iconF7="plus" className="plus" onClick={onClickLike} />
+              <Link iconF7="plus" onClick={onClickLike} />
               <span>보고싶어요</span>
             </div>
             <div>
-              <Link iconF7="cart_badge_plus" onClick={() => console.log('구매하기')} />
+              <Button iconF7="cart_badge_plus" className="buy" popupOpen=".demo-popup-swipe" onClick={onClickBuy} />
               <span>구매하기</span>
             </div>
             <div>
@@ -74,6 +109,36 @@ const MovieShowPage = ({ f7route }) => {
               <span>평가하기</span>
             </div>
           </div>
+          <Popup className="demo-popup-swipe" swipeToClose>
+            <Page className="theme-dark">
+              <Navbar>
+                <NavRight>
+                  <Link iconF7="xmark" popupClose />
+                </NavRight>
+              </Navbar>
+              <List className="option-list">
+                <ListItem
+                  className="smart-select"
+                  title="옵션 선택하기"
+                  smartSelect
+                  smartSelectParams={{ openIn: 'sheet' }}
+                >
+                  {options.length === 0 && <span className="product-null">품절</span>}
+                  <select>
+                    {options?.map((option) => (
+                      <option key={option.id}>{option.name}</option>
+                    ))}
+                  </select>
+                </ListItem>
+              </List>
+
+              <List>
+                <ListItem title={selected.name} text={selected.price} className="stepper-item">
+                  <Stepper fill round color="#f82f62" />
+                </ListItem>
+              </List>
+            </Page>
+          </Popup>
         </div>
       )}
       <Toolbar tabbar labels position="bottom">
