@@ -130,6 +130,26 @@
   margin-bottom: 10px;
 }
 
+.buy > i {
+  color: #fff;
+}
+
+.option-list {
+  margin-top: 0;
+}
+
+.product-null {
+  color: #f82f62;
+}
+
+.stepper-item {
+  padding: 10px 0;
+}
+
+.stepper-item .item-title > div {
+  font-weight: 700;
+}
+
 /* TopNavBar */
 .back > i {
   margin-right: 10px;
@@ -171,6 +191,16 @@
   height: 100px;
 }
 
+.content-null {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 110px 20px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #f82f62;
+}
+
 /* LogIn Page */
 .login-form {
   width: 90%;
@@ -208,6 +238,10 @@
 }
 
 /* My Page */
+.like-tab {
+  padding-top: 22px;
+}
+
 .user-info-box {
   display: flex;
   justify-content: space-between;
@@ -260,10 +294,6 @@
 .tabLink-box > .tab-link-active {
   border: 2px solid #f82f62;
   background-color: #f82f62;
-}
-
-.tab-box {
-  padding: 10px;
 }
 
 /* 정보 수정 */

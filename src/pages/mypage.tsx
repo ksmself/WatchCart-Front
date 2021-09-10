@@ -7,6 +7,7 @@ import TopNavBar from '@components/TopNavBar';
 import useAuth from '@hooks/useAuth';
 import LoginForm from '@pages/users/sessions/new';
 import UserInfoEdit from '@components/UserInfoEdit';
+import Like from '@components/tab/Like';
 
 const MyPage = () => {
   const { currentUser, isAuthenticated, unAuthenticateUser } = useAuth();
@@ -78,10 +79,8 @@ const MyPage = () => {
             </Link>
           </div>
           {/* Tabs  */}
-          <Tabs className="tab-box">
-            <Tab id="tab-1" tabActive>
-              Tab 1
-            </Tab>
+          <Tabs>
+            <Like />
             <Tab id="tab-2">Tab 2</Tab>
             <Tab id="tab-3">Tab 3</Tab>
             <Tab id="tab-4">
