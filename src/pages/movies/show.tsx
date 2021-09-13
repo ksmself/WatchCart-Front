@@ -10,20 +10,20 @@ import {
   NavRight,
   ListItem,
   List,
-  App,
   Stepper,
 } from 'framework7-react';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
+import { useQueryClient, useMutation, useQuery } from 'react-query';
 
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
-import { API_URL, getMovie, getDirector, likeMovie, isLiked } from '@api';
-import { useQuery } from 'react-query';
+import { API_URL, getMovie, getDirector, isLiked, likeMovie } from '@api';
 import useAuth from '@hooks/useAuth';
 
 const MovieShowPage = ({ f7route }) => {
   const movieId = f7route.params.id;
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
 
   const { data: movie, status: movieStatus, error: movieError } = useQuery(`movie-${movieId}`, getMovie(movieId));
   const { data: liked, status: likeStatus, error: likeError } = useQuery(`like-${movieId}`, isLiked(movieId));
@@ -38,15 +38,20 @@ const MovieShowPage = ({ f7route }) => {
   const actors = movie?.played_actors;
   const options = movie?.options;
 
+  const like = useMutation(likeMovie, {
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(`like-${movieId}`, data.data);
+    },
+  });
+
   const onClickLike = useCallback(async () => {
     if (!isAuthenticated) {
       f7.dialog.alert('로그인 후에 보고싶어요를 클릭해주세요!');
     } else {
-      try {
-        await likeMovie(movieId);
-      } catch (err) {
-        throw new Error(err);
-      }
+      like.mutate(movieId);
     }
   }, [isAuthenticated]);
 
@@ -97,8 +102,12 @@ const MovieShowPage = ({ f7route }) => {
           </div>
           <div className="movie-btn">
             <div>
-              <Link iconF7="plus" onClick={onClickLike} />
-              <span>보고싶어요</span>
+              <Link
+                style={{ color: liked ? '#f82f62' : '#fff' }}
+                iconF7={liked ? 'checkmark_alt' : 'plus'}
+                onClick={onClickLike}
+              />
+              <span style={{ color: liked ? '#f82f62' : '#fff' }}>보고싶어요</span>
             </div>
             <div>
               <Button iconF7="cart_badge_plus" className="buy" popupOpen=".demo-popup-swipe" onClick={onClickBuy} />

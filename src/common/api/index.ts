@@ -19,6 +19,10 @@ export const logoutAPI = () => API.delete('/logout');
 export const updateUser = (userId, params) => {
   API.patch(`/users/${userId}`, { user: params });
 };
+export const getUser = (userId) => async () => {
+  const { data } = await API.get(`/users/${userId}`);
+  return data;
+};
 // export const {
 //   query: getItems,
 //   get: getItem,
@@ -60,7 +64,8 @@ export const getActor = (actorId) => async () => {
 };
 
 export const likeMovie = (movieId) => {
-  API.post(`/movies/${movieId}/like`);
+  const data = API.post(`/movies/${movieId}/like`);
+  return data;
 };
 
 export const isLiked = (movieId) => async () => {
