@@ -2,12 +2,15 @@ import React, { useEffect, useState, Fragment, useCallback } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import { Stepper } from 'framework7-react';
+import { useMutation, useQueryClient } from 'react-query';
+import { createLineItem } from '@api';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-const SelectOptions = ({ options }) => {
+const SelectOptions = ({ options, cartNull }) => {
+  const queryClient = useQueryClient();
   const nullOption = {
     id: null,
     movie_id: null,
@@ -61,6 +64,30 @@ const SelectOptions = ({ options }) => {
     [cart],
   );
 
+  const sendCart = useMutation((params) => createLineItem(params), {
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      // 성공적으로 보냈다면 카트 초기화
+      setCart([]);
+      // '장바구니' 페이지로 이동할지 질문
+    },
+  });
+
+  const sendToCart = useCallback(async () => {
+    console.log(cart);
+    cart.map((item) => sendCart.mutate({ option_id: item.id, quantity: item.quantity }));
+    // sendCart.mutate();
+  }, [cart]);
+
+  // useEffect(() => {
+  //   console.log(cartNull);
+  //   if (cartNull) {
+  //     setCart([]);
+  //   }
+  // }, [cartNull]);
+
   useEffect(() => {
     if (selected.id !== null) {
       if (!cartKey.includes(selected.id)) {
@@ -77,9 +104,11 @@ const SelectOptions = ({ options }) => {
     setTotal(cart.slice().reduce((acc, cur) => acc + cur.price * cur.quantity, 0));
   }, [cart, total]);
 
+  /*
   useEffect(() => {
     console.log('cart: ', cart);
   }, [cart]);
+  */
 
   return (
     <div>
@@ -198,7 +227,9 @@ const SelectOptions = ({ options }) => {
                 <div className="text-primary text-xl font-bold">₩ {total}</div>
               </div>
               <div className="flex flex-row items-center">
-                <button className="w-16 bg-primary-500 font-bold">장바구니</button>
+                <button className="w-16 bg-indigo-500 font-bold" onClick={() => sendToCart()}>
+                  장바구니
+                </button>
                 <button className="w-16 bg-primary font-bold">바로 구매</button>
               </div>
             </div>

@@ -73,6 +73,11 @@ export const isLiked = (movieId) => async () => {
   return data;
 };
 
+export const createLineItem = (params) => {
+  const data = API.post('/lineitems', { line_item: params });
+  return data;
+};
+
 /*
 export const unlikeMovie = (movieId, params) => async () => {
   const { data } = await API.post(`/movies/${movieId}/like`, { params });
