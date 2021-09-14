@@ -1,17 +1,4 @@
-import {
-  Page,
-  Toolbar,
-  Icon,
-  Link,
-  f7,
-  Button,
-  Popup,
-  Navbar,
-  NavRight,
-  ListItem,
-  List,
-  Stepper,
-} from 'framework7-react';
+import { Page, Toolbar, Icon, Link, f7, Button, Popup, Navbar, NavRight } from 'framework7-react';
 import React, { useCallback } from 'react';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 
@@ -19,6 +6,7 @@ import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
 import { API_URL, getMovie, getDirector, isLiked, likeMovie } from '@api';
 import useAuth from '@hooks/useAuth';
+import SelectOptions from '@components/cart/SelectOptions';
 
 const MovieShowPage = ({ f7route }) => {
   const movieId = f7route.params.id;
@@ -61,8 +49,6 @@ const MovieShowPage = ({ f7route }) => {
      * 로그인 하는 순간 그 정보를 user의 장바구니로
      */
   }, []);
-
-  const selected = { name: 'cgv', price: '7000' };
 
   return (
     <Page className="theme-dark">
@@ -125,27 +111,7 @@ const MovieShowPage = ({ f7route }) => {
                   <Link iconF7="xmark" popupClose />
                 </NavRight>
               </Navbar>
-              <List className="option-list">
-                <ListItem
-                  className="smart-select"
-                  title="옵션 선택하기"
-                  smartSelect
-                  smartSelectParams={{ openIn: 'sheet' }}
-                >
-                  {options.length === 0 && <span className="product-null">품절</span>}
-                  <select>
-                    {options?.map((option) => (
-                      <option key={option.id}>{option.name}</option>
-                    ))}
-                  </select>
-                </ListItem>
-              </List>
-
-              <List>
-                <ListItem title={selected.name} text={selected.price} className="stepper-item">
-                  <Stepper fill round color="#f82f62" />
-                </ListItem>
-              </List>
+              {options && <SelectOptions options={options} />}
             </Page>
           </Popup>
         </div>

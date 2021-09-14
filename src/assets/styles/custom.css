@@ -134,22 +134,6 @@
   color: #fff;
 }
 
-.option-list {
-  margin-top: 0;
-}
-
-.product-null {
-  color: #f82f62;
-}
-
-.stepper-item {
-  padding: 10px 0;
-}
-
-.stepper-item .item-title > div {
-  font-weight: 700;
-}
-
 /* TopNavBar */
 .back > i {
   margin-right: 10px;
