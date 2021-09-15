@@ -185,11 +185,11 @@ const SelectOptions = ({ options, cartNull }) => {
           </Listbox>
 
           {/* cart.map */}
-          <div className="mt-8">
-            <div className="flow-root border-3 mb-5">
-              <ul className="-my-6 divide-y divide-primary">
+          <div className="my-2">
+            <div className="flow-root">
+              <ul>
                 {cart.map((product, idx, cartArr) => (
-                  <li key={product.id} className="my-6 flex flex-col items-end">
+                  <li key={product.id} className="mb-3.5 flex flex-col items-end">
                     <div className="mx-2 mb-2 flex-1 flex justify-between items-center">
                       <div className="flex flex-col w-36 text-base font-medium text-white">
                         <div className="font-bold w-36 overflow-hidden">{product.name}</div>
@@ -223,14 +223,14 @@ const SelectOptions = ({ options, cartNull }) => {
           {cart.length > 0 && (
             <div className="flex flex-row justify-between">
               <div>
-                <div className="text-base font-semibold text-white">총 금액</div>
+                <div className="text-base font-semibold text-white">총 상품금액</div>
                 <div className="text-primary text-xl font-bold">₩ {total}</div>
               </div>
               <div className="flex flex-row items-center">
-                <button className="w-16 bg-indigo-500 font-bold" onClick={() => sendToCart()}>
+                <button className="w-20 py-3 px-2 bg-indigo-500 font-bold" onClick={() => sendToCart()}>
                   장바구니
                 </button>
-                <button className="w-16 bg-primary font-bold">바로 구매</button>
+                <button className="w-20 py-3 px-2 bg-primary font-bold">바로구매</button>
               </div>
             </div>
           )}
