@@ -77,7 +77,8 @@ const SelectOptions = ({ options, cartNull }) => {
 
   const sendToCart = useCallback(async () => {
     console.log(cart);
-    cart.map((item) => sendCart.mutate({ option_id: item.id, quantity: item.quantity }));
+    sendCart.mutate(cart);
+    // cart.map((item) => sendCart.mutate({ option_id: item.id, quantity: item.quantity }));
     // sendCart.mutate();
   }, [cart]);
 
