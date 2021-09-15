@@ -1,5 +1,5 @@
 import { Page, Toolbar, Icon, Link, f7, Button, Popup, Navbar, NavRight } from 'framework7-react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 
 import BottomToolBarContent from '@components/BottomToolBarContent';
@@ -8,7 +8,7 @@ import { API_URL, getMovie, getDirector, isLiked, likeMovie } from '@api';
 import useAuth from '@hooks/useAuth';
 import SelectOptions from '@components/cart/SelectOptions';
 
-const MovieShowPage = ({ f7route }) => {
+const MovieShowPage = ({ f7route, f7router }) => {
   const movieId = f7route.params.id;
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
@@ -37,17 +37,30 @@ const MovieShowPage = ({ f7route }) => {
 
   const onClickLike = useCallback(async () => {
     if (!isAuthenticated) {
-      f7.dialog.alert('로그인 후에 보고싶어요를 클릭해주세요!');
+      // 로그인 되어 있지 않다면 모달 띄우기
+      if (!isAuthenticated) {
+        f7.dialog.confirm('로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?', 'WatchCart', () =>
+          f7router.navigate('/mypage'),
+        );
+      }
     } else {
       like.mutate(movieId);
     }
   }, [isAuthenticated]);
 
+  const [cartNull, setCartNull] = useState(false);
   const onClickBuy = useCallback(() => {
-    /**
-     * 로그인되어있지 않다면 일단 장바구니에 넣어놓고
-     * 로그인 하는 순간 그 정보를 user의 장바구니로
-     */
+    // 로그인 되어 있지 않다면 모달 띄우기
+    if (!isAuthenticated) {
+      f7.dialog.confirm('로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?', 'WatchCart', () =>
+        f7router.navigate('/mypage'),
+      );
+    }
+    // setCartNull(false);
+  }, [isAuthenticated]);
+
+  const makeOptionsNull = useCallback(() => {
+    setCartNull(true);
   }, []);
 
   return (
@@ -96,7 +109,12 @@ const MovieShowPage = ({ f7route }) => {
               <span style={{ color: liked ? '#f82f62' : '#fff' }}>보고싶어요</span>
             </div>
             <div>
-              <Button iconF7="cart_badge_plus" className="buy" popupOpen=".demo-popup-swipe" onClick={onClickBuy} />
+              <Button
+                iconF7="cart_badge_plus"
+                className="buy"
+                popupOpen=".demo-popup-swipe"
+                onClick={() => onClickBuy()}
+              />
               <span>구매하기</span>
             </div>
             <div>
@@ -104,16 +122,18 @@ const MovieShowPage = ({ f7route }) => {
               <span>평가하기</span>
             </div>
           </div>
-          <Popup className="demo-popup-swipe" swipeToClose>
-            <Page className="theme-dark">
-              <Navbar>
-                <NavRight>
-                  <Link iconF7="xmark" popupClose />
-                </NavRight>
-              </Navbar>
-              {options && <SelectOptions options={options} />}
-            </Page>
-          </Popup>
+          {isAuthenticated && (
+            <Popup className="demo-popup-swipe" swipeToClose>
+              <Page className="theme-dark">
+                <Navbar>
+                  <NavRight>
+                    <Link iconF7="xmark" popupClose />
+                  </NavRight>
+                </Navbar>
+                {options && <SelectOptions options={options} cartNull={cartNull} />}
+              </Page>
+            </Popup>
+          )}
         </div>
       )}
       <Toolbar tabbar labels position="bottom">
