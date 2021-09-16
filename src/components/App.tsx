@@ -24,7 +24,7 @@ const F7App = () => {
   });
 
   const f7params = {
-    name: 'Practice React',
+    name: 'WatchCart',
     theme: 'ios',
     id: 'com.insomenia.practice',
     routes,

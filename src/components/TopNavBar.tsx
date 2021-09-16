@@ -1,22 +1,39 @@
-import React from 'react';
-import { Navbar, NavLeft, Link, NavTitle, NavRight } from 'framework7-react';
+import React, { useCallback } from 'react';
+import { f7, Navbar, NavLeft, Link, NavTitle, NavRight, Icon, Badge } from 'framework7-react';
 
-const TopNavBar = ({ backLink, optionName }) => (
-  <Navbar className="theme-dark">
-    {!backLink && (
-      <>
-        <NavLeft>
-          <Link iconF7="cart" />
-        </NavLeft>
-        <NavTitle className="title">WatchCart</NavTitle>
-        <NavRight>
-          <Link iconF7="search" />
-        </NavRight>
-      </>
-    )}
-    {backLink && <NavLeft backLink="Back" className="back" />}
-    {optionName && <NavTitle className="title">{optionName}</NavTitle>}
-  </Navbar>
-);
+const TopNavBar = ({ f7router, backLink, optionName, cartCount, currentUser }) => {
+  const onClickCart = useCallback(() => {
+    if (!currentUser) {
+      f7.dialog.confirm('로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?', 'WatchCart', () =>
+        f7router.navigate('/mypage'),
+      );
+    } else {
+      // cart 가져오기
+      f7router.navigate('/carts');
+    }
+  }, [currentUser]);
+
+  return (
+    <Navbar className="theme-dark">
+      {!backLink && (
+        <>
+          <NavLeft>
+            <Link onClick={() => onClickCart()}>
+              <Icon ios="f7:cart" aurora="f7:cart" md="material:shopping_cart">
+                {currentUser && cartCount > 0 && <Badge color="red">{cartCount}</Badge>}
+              </Icon>
+            </Link>
+          </NavLeft>
+          <NavTitle className="title">WatchCart</NavTitle>
+          <NavRight>
+            <Link iconF7="search" />
+          </NavRight>
+        </>
+      )}
+      {backLink && <NavLeft backLink="Back" className="back" />}
+      {optionName && <NavTitle className="title">{optionName}</NavTitle>}
+    </Navbar>
+  );
+};
 
 export default TopNavBar;
