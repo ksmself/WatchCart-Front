@@ -5,6 +5,8 @@ import { cartItemsState } from '@pages/carts';
 import { useMutation } from 'react-query';
 import { deleteLineItem, updateLineItem } from '@api';
 
+import logo from '../../assets/images/logo.png';
+
 const CartItem = ({ item }) => {
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
   const [prev, setPrev] = useState(cartItems.slice());
@@ -27,7 +29,7 @@ const CartItem = ({ item }) => {
       });
 
     setCartItems(newValue);
-  }, [cartItems, item]);
+  }, [cartItems]);
 
   const onChangePlus = useCallback(() => {
     const newValue =
@@ -43,7 +45,7 @@ const CartItem = ({ item }) => {
       });
 
     setCartItems(newValue);
-  }, [cartItems, item]);
+  }, [cartItems]);
 
   const deleteCart = useMutation((params) => deleteLineItem(params), {
     onError: (error) => {
@@ -59,9 +61,8 @@ const CartItem = ({ item }) => {
   const onClickDelete = useCallback(() => {
     const newValue = cartItems?.filter((c) => c.id !== item.id);
     setCartItems(newValue);
-    // console.log('방금 CART 변경시킴', cartItems);
     deleteCart.mutate(item.id);
-  }, [cartItems, item]);
+  }, [cartItems]);
 
   const updateCart = useMutation((params) => updateLineItem(params), {
     onError: (error) => {
@@ -83,28 +84,37 @@ const CartItem = ({ item }) => {
     });
   }, [cartItems, prev]);
 
-  return (
-    <li className="mb-3.5 flex flex-col items-end">
-      <div className="mx-2 mb-2 flex-1 flex justify-between items-center">
-        <div className="flex flex-col w-36 text-base font-medium text-white">
-          <div className="font-bold w-36 overflow-hidden">{item.name}</div>
+  useEffect(() => {
+    console.log(cartItems);
+  }, [cartItems]);
 
-          <p className="font-bold">₩{item.price}</p>
+  return (
+    <li className="mb-3.5">
+      <div className="mx-2 mb-2 flex-row">
+        <div className="flex flex-row justify-between items-center">
+          <img src={logo} alt="insomenia-logo" className="w-20 h-20" />
+          <div className="flex flex-col text-sm font-medium text-white">
+            <div className="mb-2 font-bold text-lg">기생충</div>
+            <div className="mb-1.5 font-normal overflow-hidden">기생충-롯데시네마</div>
+            <p className="mb-0.5 font-normal">₩6500</p>
+            <button
+              type="button"
+              className="mb-2 pr-2 text-right font-bold text-primary hover:text-primary"
+              onClick={() => onClickDelete()}
+            >
+              삭제
+            </button>
+            <Stepper
+              fill
+              small
+              color="#f82f62"
+              value={item.quantity}
+              min={1}
+              onStepperMinusClick={() => onChangeMinus()}
+              onStepperPlusClick={() => onChangePlus()}
+            />
+          </div>
         </div>
-        <Stepper
-          fill
-          small
-          color="#f82f62"
-          value={item.quantity}
-          min={1}
-          onStepperMinusClick={() => onChangeMinus()}
-          onStepperPlusClick={() => onChangePlus()}
-        />
-      </div>
-      <div className="flex pr-2">
-        <button type="button" className="font-bold text-primary hover:text-primary" onClick={() => onClickDelete()}>
-          삭제
-        </button>
       </div>
     </li>
   );

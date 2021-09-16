@@ -31,6 +31,12 @@ const CartIndexPage = () => {
     getCartItems();
   }, [uncompletedOrderId]);
 
+  /*
+  useEffect(() => {
+    console.log('I know cartItems', cartItems);
+  }, [cartItems]);
+  */
+
   return (
     <Page className="theme-dark">
       <TopNavBar backLink />
@@ -39,7 +45,31 @@ const CartIndexPage = () => {
           장바구니가 비었습니다.
         </div>
       )}
-      {cartItems.length > 0 && cartItems.map((item) => <CartItem key={item.id} item={item} />)}
+      {cartItems.length > 0 &&
+        cartItems.map((item) => (
+          <div className="pt-2 px-4" key={item.id}>
+            <div className="my-2">
+              <div className="flow-root">
+                <ul>
+                  <CartItem item={item} />
+                </ul>
+              </div>
+            </div>
+          </div>
+        ))}
+      {cartItems?.length > 0 && (
+        <div className="pt-3 px-5">
+          <div className="flex flex-row justify-between">
+            <div>
+              <div className="text-base font-semibold text-white">총 상품금액</div>
+              <div className="text-primary text-xl font-bold">₩ 24000</div>
+            </div>
+            <div className="flex flex-row items-center">
+              <button className="w-36 py-3 px-2 mb-10 bg-indigo-500 font-bold">바로구매</button>
+            </div>
+          </div>
+        </div>
+      )}
       <Toolbar tabbar labels position="bottom">
         <BottomToolBarContent currentIdx={0} />
       </Toolbar>
