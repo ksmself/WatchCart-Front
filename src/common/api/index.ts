@@ -93,6 +93,11 @@ export const deleteLineItem = (lineitemId) => {
   return data;
 };
 
+export const updateOrder = (params) => {
+  const data = API.put(`/orders/${params.orderId}`, { order: params.order });
+  return data;
+};
+
 /*
 export const unlikeMovie = (movieId, params) => async () => {
   const { data } = await API.post(`/movies/${movieId}/like`, { params });
