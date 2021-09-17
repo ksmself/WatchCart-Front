@@ -1,16 +1,15 @@
 import React, { useEffect, useState, Fragment, useCallback } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
-import { Stepper } from 'framework7-react';
-import { useMutation, useQueryClient } from 'react-query';
+import { Stepper, f7 } from 'framework7-react';
+import { useMutation } from 'react-query';
 import { createLineItem } from '@api';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-const SelectOptions = ({ options, cartNull }) => {
-  const queryClient = useQueryClient();
+const SelectOptions = ({ options, f7router }) => {
   const nullOption = {
     id: null,
     movie_id: null,
@@ -20,7 +19,7 @@ const SelectOptions = ({ options, cartNull }) => {
   const [selected, setSelected] = useState(options[0]);
   const [cart, setCart] = useState([]);
   const [cartKey, setCartKey] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [price, setPrice] = useState(0);
 
   const onClickDelete = useCallback(
     (id) => {
@@ -69,23 +68,15 @@ const SelectOptions = ({ options, cartNull }) => {
       console.log(error);
     },
     onSuccess: (data) => {
-      // 성공적으로 보냈다면 카트 초기화
-      setCart([]);
       // '장바구니' 페이지로 이동할지 질문
+      console.log('success');
+      f7.dialog.confirm('장바구니로 이동하시겠습니까?', 'WatchCart', () => f7router.navigate('/carts'));
     },
   });
 
   const sendToCart = useCallback(() => {
-    console.log(cart);
     sendCart.mutate(cart);
   }, [cart]);
-
-  // useEffect(() => {
-  //   console.log(cartNull);
-  //   if (cartNull) {
-  //     setCart([]);
-  //   }
-  // }, [cartNull]);
 
   useEffect(() => {
     if (selected.id !== null) {
@@ -100,14 +91,8 @@ const SelectOptions = ({ options, cartNull }) => {
   }, [selected, cart, cartKey, nullOption]);
 
   useEffect(() => {
-    setTotal(cart.slice().reduce((acc, cur) => acc + cur.price * cur.quantity, 0));
-  }, [cart, total]);
-
-  /*
-  useEffect(() => {
-    console.log('cart: ', cart);
-  }, [cart]);
-  */
+    setPrice(cart.slice().reduce((acc, cur) => acc + cur.price * cur.quantity, 0));
+  }, [cart, price]);
 
   return (
     <div>
@@ -223,7 +208,7 @@ const SelectOptions = ({ options, cartNull }) => {
             <div className="flex flex-row justify-between">
               <div>
                 <div className="text-base font-semibold text-white">총 상품금액</div>
-                <div className="text-primary text-xl font-bold">₩ {total}</div>
+                <div className="text-primary text-xl font-bold">₩ {price}</div>
               </div>
               <div className="flex flex-row items-center">
                 <button className="w-20 py-3 px-2 bg-indigo-500 font-bold" onClick={() => sendToCart()}>

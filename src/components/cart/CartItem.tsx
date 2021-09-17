@@ -35,10 +35,6 @@ const CartItem = ({ item }) => {
   }, []);
 
   useEffect(() => {
-    console.log(total);
-  }, [total]);
-
-  useEffect(() => {
     setPrev(cartItems.slice());
   }, []);
 
@@ -56,7 +52,7 @@ const CartItem = ({ item }) => {
       });
 
     setCartItems(newValue);
-    setTotal((p) => p - info.option_price);
+    if (item.quantity > 1) setTotal((p) => p - info.option_price);
   }, [cartItems, info]);
 
   const onChangePlus = useCallback(() => {
@@ -91,7 +87,7 @@ const CartItem = ({ item }) => {
     const newValue = cartItems?.filter((c) => c.id !== item.id);
     setCartItems(newValue);
     deleteCart.mutate(item.id);
-    setTotal((p) => p - info.quantity * info.option_price);
+    setTotal((p) => p - item.quantity * info.option_price);
   }, [cartItems, info]);
 
   const updateCart = useMutation((params) => updateLineItem(params), {
