@@ -1,15 +1,42 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Stepper } from 'framework7-react';
-import { useRecoilState } from 'recoil';
-import { cartItemsState } from '@pages/carts';
+import { useRecoilState, atomFamily, atom } from 'recoil';
+import { cartItemsState, totalState } from '@pages/carts';
 import { useMutation } from 'react-query';
-import { deleteLineItem, updateLineItem } from '@api';
+import { API_URL, deleteLineItem, updateLineItem } from '@api';
 
-import logo from '../../assets/images/logo.png';
+export const itemIds = atomFamily({
+  key: 'itemIds',
+  default: {},
+});
+
+const priceState = atom({
+  key: 'price',
+  default: 0,
+});
 
 const CartItem = ({ item }) => {
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
   const [prev, setPrev] = useState(cartItems.slice());
+  const [info, setInfo] = useRecoilState(itemIds(item.id));
+  const [total, setTotal] = useRecoilState(totalState);
+
+  useEffect(() => {
+    setTotal(0);
+    const getInfo = async (itemId) => {
+      const url = `${API_URL}/lineitems/${itemId}`;
+      const resp = await fetch(url);
+      const body = await resp.json();
+      setInfo(body);
+      setTotal((p) => p + body.quantity * body.option_price);
+    };
+
+    getInfo(item.id);
+  }, []);
+
+  useEffect(() => {
+    console.log(total);
+  }, [total]);
 
   useEffect(() => {
     setPrev(cartItems.slice());
@@ -29,7 +56,8 @@ const CartItem = ({ item }) => {
       });
 
     setCartItems(newValue);
-  }, [cartItems]);
+    setTotal((p) => p - info.option_price);
+  }, [cartItems, info]);
 
   const onChangePlus = useCallback(() => {
     const newValue =
@@ -45,7 +73,8 @@ const CartItem = ({ item }) => {
       });
 
     setCartItems(newValue);
-  }, [cartItems]);
+    setTotal((p) => p + info.option_price);
+  }, [cartItems, info]);
 
   const deleteCart = useMutation((params) => deleteLineItem(params), {
     onError: (error) => {
@@ -62,7 +91,8 @@ const CartItem = ({ item }) => {
     const newValue = cartItems?.filter((c) => c.id !== item.id);
     setCartItems(newValue);
     deleteCart.mutate(item.id);
-  }, [cartItems]);
+    setTotal((p) => p - info.quantity * info.option_price);
+  }, [cartItems, info]);
 
   const updateCart = useMutation((params) => updateLineItem(params), {
     onError: (error) => {
@@ -84,19 +114,15 @@ const CartItem = ({ item }) => {
     });
   }, [cartItems, prev]);
 
-  useEffect(() => {
-    console.log(cartItems);
-  }, [cartItems]);
-
   return (
     <li className="mb-3.5">
       <div className="mx-2 mb-2 flex-row">
         <div className="flex flex-row justify-between items-center">
-          <img src={logo} alt="insomenia-logo" className="w-20 h-20" />
+          <img src={`${API_URL}/uploads/${info.image_path}`} alt="insomenia-logo" className="w-20 h-20" />
           <div className="flex flex-col text-sm font-medium text-white">
-            <div className="mb-2 font-bold text-lg">기생충</div>
-            <div className="mb-1.5 font-normal overflow-hidden">기생충-롯데시네마</div>
-            <p className="mb-0.5 font-normal">₩6500</p>
+            <div className="mb-2 font-bold text-lg">{info.movie_title}</div>
+            <div className="mb-1.5 font-normal overflow-hidden">{info.option_name}</div>
+            <p className="mb-0.5 font-normal">₩{info.option_price}</p>
             <button
               type="button"
               className="mb-2 pr-2 text-right font-bold text-primary hover:text-primary"

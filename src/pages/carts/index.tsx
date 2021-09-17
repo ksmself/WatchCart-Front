@@ -1,24 +1,27 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Page, Stepper, Toolbar } from 'framework7-react';
+import { Page, Toolbar } from 'framework7-react';
 import { atom, useRecoilState } from 'recoil';
-import axios from 'axios';
 
 import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import { API_URL } from '@api';
 import { uncompletedOrderState } from '@pages/intro';
-import CartItem from '@components/cart/CartItem';
+import CartItem, { itemIds } from '@components/cart/CartItem';
 
 export const cartItemsState = atom({
   key: 'cartItemsState',
   default: [],
 });
 
-const CartIndexPage = () => {
+export const totalState = atom({
+  key: 'totalState',
+  default: 0,
+});
+
+const CartIndexPage = ({ f7router }) => {
   const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
-  // const cartItem = useRecoilValueLoadable(cartSelector(uncompletedOrderId));
-  // const [input, setInput] = useRecoilState(inputState);
+  const [total, setTotal] = useRecoilState(totalState);
 
   useEffect(() => {
     const getCartItems = async () => {
@@ -30,12 +33,6 @@ const CartIndexPage = () => {
 
     getCartItems();
   }, [uncompletedOrderId]);
-
-  /*
-  useEffect(() => {
-    console.log('I know cartItems', cartItems);
-  }, [cartItems]);
-  */
 
   return (
     <Page className="theme-dark">
@@ -62,10 +59,15 @@ const CartIndexPage = () => {
           <div className="flex flex-row justify-between">
             <div>
               <div className="text-base font-semibold text-white">총 상품금액</div>
-              <div className="text-primary text-xl font-bold">₩ 24000</div>
+              <div className="text-primary text-xl font-bold">₩ {total}</div>
             </div>
             <div className="flex flex-row items-center">
-              <button className="w-36 py-3 px-2 mb-10 bg-indigo-500 font-bold">바로구매</button>
+              <button
+                className="w-36 py-3 px-2 mb-10 bg-indigo-500 font-bold"
+                onClick={() => f7router.navigate('/orders')}
+              >
+                바로구매
+              </button>
             </div>
           </div>
         </div>
