@@ -53,7 +53,8 @@
 
 /* Movie/:id Page */
 .movie-container {
-  margin: 10px 12px 30px;
+  /* margin: 10px 12px 30px; */
+  margin: 10px 12px 70px;
 }
 
 .movie-container img {
@@ -283,4 +284,9 @@
 /* 정보 수정 */
 .tab-active .login-form {
   margin-top: 0;
+}
+
+/* Order Complete Page */
+.break-word {
+  word-break: keep-all;
 }
