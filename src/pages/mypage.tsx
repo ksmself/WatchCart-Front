@@ -6,8 +6,9 @@ import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
 import useAuth from '@hooks/useAuth';
 import LoginForm from '@pages/users/sessions/new';
-import UserInfoEdit from '@components/UserInfoEdit';
+import UserInfoEdit from '@components/user/UserInfoEdit';
 import Like from '@components/tab/Like';
+import UserOrderList from '@components/user/UserOrderList';
 
 const MyPage = () => {
   const { currentUser, isAuthenticated, unAuthenticateUser } = useAuth();
@@ -82,7 +83,9 @@ const MyPage = () => {
           <Tabs>
             <Like />
             <Tab id="tab-2">Tab 2</Tab>
-            <Tab id="tab-3">Tab 3</Tab>
+            <Tab id="tab-3">
+              <UserOrderList />
+            </Tab>
             <Tab id="tab-4">
               <UserInfoEdit />
             </Tab>

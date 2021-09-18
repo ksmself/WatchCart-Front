@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { f7, List, ListInput, ListItem } from 'framework7-react';
+import { f7, List, ListInput } from 'framework7-react';
 import * as Yup from 'yup';
 import useAuth from '@hooks/useAuth';
 import { sleep } from '@utils';
