@@ -13,6 +13,7 @@ import useAuth from '@hooks/useAuth';
 import { cartItemsState } from '@pages/carts';
 import { API } from '@api/api.config';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import Loading from '@components/Loading';
 
 export const uncompletedOrderState = atom({
   key: 'orderState',
@@ -49,10 +50,6 @@ const IntroPage = ({ f7router }) => {
     fetchCategory(1);
   }, []);
 
-  useEffect(() => {
-    console.log(categories);
-  }, [categories]);
-
   const loadMoreButtonRef = React.useRef();
 
   useIntersectionObserver({
@@ -86,18 +83,15 @@ const IntroPage = ({ f7router }) => {
     getCartItems();
   }, [uncompletedOrderId]);
 
-  useEffect(() => {
-    console.log(categories);
-    if (isSuccess) {
-      categories.pages.map((page) => page.data.data.map((category) => console.log(category)));
-    }
-  }, [isSuccess, categories]);
-
   return (
     <Page className="theme-dark">
       <TopNavBar f7router={f7router} cartCount={cartItems?.length} currentUser={currentUser} />
-      {status === 'loading' && <div>Loading...</div>}
-      {status === 'error' && <div>{error}</div>}
+      {isFetching && (
+        <div className="m-32">
+          <Loading />
+        </div>
+      )}
+      {error && <div className="flex justify-center">{error}</div>}
       {categories && (
         <div className="container-box">
           {isSuccess &&
@@ -115,9 +109,14 @@ const IntroPage = ({ f7router }) => {
           <Block />
         </div>
       )}
-      <div>
-        <button ref={loadMoreButtonRef} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
-          {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load Newer' : null}
+      <div className="flex justify-center">
+        <button
+          ref={loadMoreButtonRef}
+          className="font-bold text-primary"
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          {isFetchingNextPage ? <Loading /> : hasNextPage ? 'Load More' : null}
         </button>
       </div>
       <Toolbar tabbar labels position="bottom">
