@@ -1,16 +1,18 @@
 import { Page, Toolbar, BlockTitle, Block } from 'framework7-react';
 import { replace, sampleSize, zip } from 'lodash';
-import React, { useEffect } from 'react';
-import { useQuery } from 'react-query';
+import React, { useEffect, useRef, useState } from 'react';
+import { useInfiniteQuery, useQuery } from 'react-query';
 import { atom, useRecoilState } from 'recoil';
 // import sanitizeHtml from '../js/utils/sanitizeHtml';
 
 import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
-import { API_URL, getCategories } from '@api';
+import { API_URL } from '@api';
 import RowSwiper from '@components/Swiper/RowSwiper';
 import useAuth from '@hooks/useAuth';
 import { cartItemsState } from '@pages/carts';
+import { API } from '@api/api.config';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
 
 export const uncompletedOrderState = atom({
   key: 'orderState',
@@ -19,7 +21,46 @@ export const uncompletedOrderState = atom({
 
 const IntroPage = ({ f7router }) => {
   const { currentUser } = useAuth();
-  const { data: categories, status, error } = useQuery('categories', getCategories());
+
+  const [fetchRange, setFetchRange] = useState(4);
+
+  const fetchCategory = async ({ pageParam = 1 }) => {
+    const data = await API.get(`/categories/page/${pageParam}`);
+    return { data, nextPage: pageParam + 1 };
+  };
+
+  const {
+    data: categories,
+    error,
+    isSuccess,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery('categories', fetchCategory, {
+    getNextPageParam: (lastPage) => {
+      if (lastPage?.data?.data?.length < fetchRange) return undefined;
+      return lastPage.nextPage ?? false;
+    },
+  });
+
+  useEffect(() => {
+    fetchCategory(1);
+  }, []);
+
+  useEffect(() => {
+    console.log(categories);
+  }, [categories]);
+
+  const loadMoreButtonRef = React.useRef();
+
+  useIntersectionObserver({
+    target: loadMoreButtonRef,
+    onIntersect: fetchNextPage,
+    enabled: hasNextPage,
+  });
+
   const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
 
@@ -45,6 +86,13 @@ const IntroPage = ({ f7router }) => {
     getCartItems();
   }, [uncompletedOrderId]);
 
+  useEffect(() => {
+    console.log(categories);
+    if (isSuccess) {
+      categories.pages.map((page) => page.data.data.map((category) => console.log(category)));
+    }
+  }, [isSuccess, categories]);
+
   return (
     <Page className="theme-dark">
       <TopNavBar f7router={f7router} cartCount={cartItems?.length} currentUser={currentUser} />
@@ -52,19 +100,31 @@ const IntroPage = ({ f7router }) => {
       {status === 'error' && <div>{error}</div>}
       {categories && (
         <div className="container-box">
-          {categories.map((category) => (
-            <div className="category-box" key={category?.id}>
-              <BlockTitle className="block-title">{category?.title}</BlockTitle>
-              <RowSwiper movies={category.movies} />
-            </div>
-          ))}
+          {isSuccess &&
+            categories.pages.map((page) =>
+              page.data.data.map(
+                (category) =>
+                  category.movies.length !== 0 && (
+                    <div className="category-box" key={category?.id}>
+                      <BlockTitle className="block-title">{category?.title}</BlockTitle>
+                      <RowSwiper movies={category.movies} />
+                    </div>
+                  ),
+              ),
+            )}
           <Block />
         </div>
       )}
+      <div>
+        <button ref={loadMoreButtonRef} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+          {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load Newer' : null}
+        </button>
+      </div>
       <Toolbar tabbar labels position="bottom">
         <BottomToolBarContent currentIdx={0} />
       </Toolbar>
     </Page>
   );
 };
+
 export default React.memo(IntroPage);
