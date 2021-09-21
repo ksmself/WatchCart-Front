@@ -1,72 +1,88 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import dayjs from 'dayjs';
 
-import OrderItem from '@components/OrderItem';
-import logo from '../../assets/images/logo.png';
+import useAuth from '@hooks/useAuth';
+import { API_URL, getUser } from '@api';
+import Loading from '@components/Loading';
+
+dayjs.locale('ko');
 
 const UserOrderList = () => {
-  const [order, setOrder] = useState(0);
-  const info = {
-    movie_title: '기생충',
-    option_price: '6000',
-    quantity: 2,
-  };
+  const { currentUser } = useAuth();
+  const { data: userInfo, status, error: userInfoError } = useQuery(
+    `userInfo-${currentUser.id}`,
+    getUser(currentUser.id),
+  );
 
-  // GET /orders?q[user_id]=${currenUser.id}
-  // => 해당 user가 주문한 order 여러개 출력
-  // 그 order들 map 돌면서 먼저 orderId 찾고, 예를 들어 30이다
-  // GET /lineitems?q[order_id]=30&q[status]=complete
-  // => lineitems들이 출력된다
-  // => GET /lineitems/:id 하면 movie_title 등 필요한 정보 받아올 수 있다.
+  const [onlyOrder, setOnlyOrder] = useState(null);
+  useEffect(() => {
+    setOnlyOrder(userInfo?.orders);
+  }, [userInfo]);
 
   return (
-    <div className="px-4 py-5">
-      <div className="border-4 border-primary py-3 px-3.5">
-        <div className="mb-4 font-bold text-base">20210917(주문완료)</div>
-        <div className="mb-1 font-bold text-primary text-base">* 배송 정보</div>
-        <table className="table-fixed mb-4">
-          <tbody>
-            <tr className="mb-1.5">
-              <th className="w-1/3 text-left">수령인</th>
-              <td>라치카</td>
-            </tr>
-            <tr className="mb-1.5">
-              <th className="w-1/3 text-left">전화번호</th>
-              <td>010-0000-0000</td>
-            </tr>
-            <tr className="mb-1.5">
-              <th className="w-1/3 text-left">주소</th>
-              <td>경기도 고양시 일산동구 대화동 강송로 195</td>
-            </tr>
-          </tbody>
-        </table>
+    <>
+      {status === 'loading' && (
+        <div className="m-32">
+          <Loading />
+        </div>
+      )}
+      {onlyOrder &&
+        onlyOrder.map((order) => {
+          if (order.status === 'orderCompleted') {
+            return (
+              <div key={order.id} className="px-4 py-5">
+                <div className="border-4 border-primary py-3 px-3.5">
+                  <div className="mb-4 font-bold text-base">
+                    {dayjs(order.created_at).format('YYYY년 MM월 DD일')}(주문완료)
+                  </div>
+                  <div className="mb-1 font-bold text-primary text-base">* 배송 정보</div>
+                  <table className="table-fixed mb-4">
+                    <tbody>
+                      <tr className="mb-1.5">
+                        <th className="w-1/3 text-left">수령인</th>
+                        <td className="pl-5">{order.receiver_name}</td>
+                      </tr>
+                      <tr className="mb-1.5">
+                        <th className="w-1/3 text-left">전화번호</th>
+                        <td className="pl-5">{order.receiver_phone}</td>
+                      </tr>
+                      <tr className="mb-1.5">
+                        <th className="w-1/3 text-left">주소</th>
+                        <td className="pl-5">{order.address1}</td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-        {/* 주문한 상품 정보 */}
-        <div className="mb-2 font-bold text-primary text-base">* 주문 상품</div>
-        <div className="flex flex-row justify-between items-start mb-1 px-1">
-          <div className="flex flex-col">
-            <div className="font-bold text-sm mb-2">{info.movie_title}</div>
-            <div>
-              ₩ {info.option_price} / 수량 {info.quantity}개
-            </div>
-          </div>
-          <img src={logo} className="w-20 h-20" />
-        </div>
-        {/* 
-          {cartItems.map((item) => (
-            <OrderItem key={item.id} item={item} />
-          ))}
-        */}
-        <div className="flex flex-row justify-between items-start mb-3 px-1">
-          <div className="flex flex-col">
-            <div className="font-bold text-sm mb-2">{info.movie_title}</div>
-            <div>
-              ₩ {info.option_price} / 수량 {info.quantity}개
-            </div>
-          </div>
-          <img src={logo} className="w-20 h-20" />
-        </div>
-      </div>
-    </div>
+                  {/* 주문한 상품 정보 */}
+                  <div className="mb-2 font-bold text-primary text-base">* 주문 상품</div>
+                  {order.line_items?.length > 0 &&
+                    order.line_items.map((item) => {
+                      if (item.status === 'complete') {
+                        return (
+                          <div key={item.id} className="flex flex-row justify-between items-start mb-4 px-1">
+                            <div className="flex flex-col">
+                              <div className="font-bold text-sm mb-1">{item.option.name}</div>
+                              <div className="text-xs mb-2 text-gray-300">{item.option.movie.title}</div>
+                              <div>
+                                ₩ {item.option.price} / 수량 {item.quantity}개
+                              </div>
+                            </div>
+                            <img
+                              src={`${API_URL}${item.option.movie.image_path}`}
+                              className="w-20 h-20"
+                              alt={item.option.name || '이미지'}
+                            />
+                          </div>
+                        );
+                      }
+                    })}
+                </div>
+              </div>
+            );
+          }
+        })}
+    </>
   );
 };
 
