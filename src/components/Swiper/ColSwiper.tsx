@@ -19,7 +19,7 @@ const ColSwiper = ({ item }) => (
               {idx + 1 < itemArr.length && (
                 <Col width="50" className="colswiper-col">
                   <Link href={`/movies/${itemArr[idx + 1]?.id}`}>
-                    <img src={`${API_URL}${itemArr[idx + 1]?.image_path}`} alt={itemArr[idx]?.title} />
+                    <img src={`${API_URL}/uploads/${itemArr[idx + 1]?.image_path}`} alt={itemArr[idx + 1]?.title} />
                   </Link>
                   <div>{itemArr[idx + 1]?.title}</div>
                 </Col>
