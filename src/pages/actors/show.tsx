@@ -6,6 +6,7 @@ import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import { getActor } from '@api';
 import ColSwiper from '@components/Swiper/ColSwiper';
+import Loading from '@components/Loading';
 
 const ActorShowPage = ({ f7route }) => {
   const actorId = f7route.params.id;
@@ -14,7 +15,11 @@ const ActorShowPage = ({ f7route }) => {
   return (
     <Page className="theme-dark">
       <TopNavBar backLink={true} />
-      {status === 'loading' && <div>Loading...</div>}
+      {status === 'loading' && (
+        <div className="m-32">
+          <Loading />
+        </div>
+      )}
       {status === 'error' && <div>{error}</div>}
       {actor && <BlockTitle id="category-title">{actor.name}</BlockTitle>}
       {actor && <ColSwiper item={actor.played_movies} />}
