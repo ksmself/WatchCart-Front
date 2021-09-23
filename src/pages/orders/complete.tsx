@@ -13,7 +13,7 @@ const OrderCompletePage = ({ f7router }) => (
         <Icon f7="checkmark_circle" className="font-bold text-primary" />
       </div>
       <div className="flex flex-row">
-        <button className="px-4 py-2 font-bold bg-indigo-500 break-word" onClick={() => f7router.navigate()}>
+        <button className="px-4 py-2 font-bold bg-indigo-500 break-word" onClick={() => f7router.navigate('/mypage')}>
           주문내역 확인하기
         </button>
         <button className="px-4 py-2 font-bold bg-primary break-word" onClick={() => f7router.navigate('/intro')}>
