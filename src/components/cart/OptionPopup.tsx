@@ -22,18 +22,19 @@ const OptionPopup = ({ options, f7router }) => {
   const [price, setPrice] = useState(0);
   const [showModal, setShowModal] = useState(false);
 
-  const sendCart = useMutation((params) => createLineItem(params), {
+  const sendCart = useMutation(async (params) => await createLineItem(params), {
     onError: (error) => {
       console.log(error);
     },
     onSuccess: (data) => {
+      console.log(data);
       setShowModal(true);
     },
   });
 
   const sendToCart = useCallback(async () => {
     const newValue = await Promise.all(Object.entries(cart).map((v) => v[1]));
-    sendCart.mutateAsync(newValue);
+    await sendCart.mutateAsync(newValue);
   }, [cart]);
 
   /** 선택된 option 카트에 넣기 */
@@ -46,7 +47,7 @@ const OptionPopup = ({ options, f7router }) => {
   }, [selected]);
 
   useEffect(() => {
-    console.log(cart);
+    console.log('optionCart', cart);
   }, [cart]);
 
   return (
@@ -220,12 +221,11 @@ const OptionPopup = ({ options, f7router }) => {
                     </div>
                     <div className="mb-6 text-sm">장바구니에 상품이 담겼습니다.</div>
                     <Link
-                      href="/carts"
                       className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
                       onClick={() => {
                         setShowModal(false);
-                        setCart({});
                         f7router.navigate('/carts');
+                        setCart({});
                       }}
                       popupClose
                     >

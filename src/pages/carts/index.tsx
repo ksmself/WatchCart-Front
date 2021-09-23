@@ -1,27 +1,44 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Page, Toolbar } from 'framework7-react';
-import { atom, useRecoilState } from 'recoil';
+import { atom, selector, useRecoilState, useRecoilValue } from 'recoil';
 
 import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import { API_URL } from '@api';
 import { uncompletedOrderState } from '@pages/intro';
-import CartItem, { itemIds } from '@components/cart/CartItem';
+import CartItem from '@components/cart/CartItem';
+import useAuth from '@hooks/useAuth';
 
 export const cartItemsState = atom({
   key: 'cartItemsState',
   default: [],
 });
 
-export const totalState = atom({
-  key: 'totalState',
-  default: 0,
+export const totalState = selector({
+  key: 'totalsState',
+  get: ({ get }) => {
+    const cart = get(cartItemsState);
+    const subTotal = cart.reduce((acc, cur) => acc + cur.option.price * cur.quantity, 0);
+    return subTotal;
+  },
 });
 
 const CartIndexPage = ({ f7router }) => {
+  const { currentUser } = useAuth();
   const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
-  const [total, setTotal] = useRecoilState(totalState);
+  const total = useRecoilValue(totalState);
+
+  useEffect(() => {
+    const getUncompletedOrderId = async () => {
+      const url = `${API_URL}/orders?q[user_id_eq]=${currentUser?.id}&q[status_eq]=orderUncompleted`;
+      const resp = await fetch(url);
+      const body = await resp.json();
+      if (body) setUncompletedOrderId(body[0]?.id || null);
+    };
+
+    getUncompletedOrderId();
+  }, [currentUser]);
 
   useEffect(() => {
     const getCartItems = async () => {
@@ -34,15 +51,20 @@ const CartIndexPage = ({ f7router }) => {
     getCartItems();
   }, [uncompletedOrderId]);
 
+  useEffect(() => {
+    console.log(cartItems);
+    console.log(total);
+  }, [cartItems, total]);
+
   return (
     <Page className="theme-dark">
       <TopNavBar backLink />
-      {cartItems.length === 0 && (
+      {cartItems?.length === 0 && (
         <div className="flex justify-center items-center pt-8 font-bold text-xl text-primary">
           장바구니가 비었습니다.
         </div>
       )}
-      {cartItems.length > 0 &&
+      {cartItems?.length > 0 &&
         cartItems.map((item) => (
           <div className="pt-2 px-4" key={item.id}>
             <div className="my-2">

@@ -78,18 +78,43 @@ export const isLiked = (movieId) => async () => {
   return data;
 };
 
-export const createLineItem = (params) => {
-  const data = API.post('/lineitems', { line_item: params });
+export const createLineItem = async (params) => {
+  const data = await API.post('/lineitems', { line_item: params });
   return data;
 };
 
-export const updateLineItem = (params) => {
-  const data = API.put(`/lineitems/${params.lineitemId}`, { line_item: params.line_item });
+export const getLineitemInfo = (orderId) => async () => {
+  const data = await API.get(`/lineitems/${orderId}`);
+  return data;
+};
+
+export const getLineitem = (orderId) => async () => {
+  const data = await API.get(`/lineitems?q[order_id_eq]=${orderId}`);
+  return data;
+};
+
+export const updateLineItem = async (params) => {
+  const data = await API.put(`/lineitems/${params.id}`, { line_item: params.line_item });
   return data;
 };
 
 export const deleteLineItem = (lineitemId) => {
   const data = API.delete(`/lineitems/${lineitemId}`);
+  return data;
+};
+
+export const getLineitems = (orderId) => async () => {
+  const data = await API.get(`/lineitems?q[order_id_eq]=${orderId}&q[status_eq]=complete`);
+  return data;
+};
+
+export const getOrder = (orderId) => async () => {
+  const data = await API.get(`/orders?q[order_id_eq]=${orderId}&q[status_eq]=complete`);
+  return data;
+};
+
+export const getUserOrders = (userId) => async () => {
+  const data = await API.get(`/orders?q[user_id_eq]=${userId}&q[status_eq]=orderCompleted`);
   return data;
 };
 
