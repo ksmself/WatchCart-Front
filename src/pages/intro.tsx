@@ -1,9 +1,7 @@
 import { Page, Toolbar, BlockTitle, Block } from 'framework7-react';
-import { replace, sampleSize, zip } from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
-import { useInfiniteQuery, useQuery } from 'react-query';
+import React, { useEffect, useState } from 'react';
+import { useInfiniteQuery } from 'react-query';
 import { atom, useRecoilState } from 'recoil';
-// import sanitizeHtml from '../js/utils/sanitizeHtml';
 
 import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
@@ -38,7 +36,6 @@ const IntroPage = ({ f7router }) => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-    status,
   } = useInfiniteQuery('categories', fetchCategory, {
     getNextPageParam: (lastPage) => {
       if (lastPage?.data?.data?.length < fetchRange) return undefined;
@@ -87,7 +84,7 @@ const IntroPage = ({ f7router }) => {
     <Page className="theme-dark">
       <TopNavBar f7router={f7router} cartCount={cartItems?.length} currentUser={currentUser} />
       {isFetching && (
-        <div className="m-32">
+        <div className="m-8">
           <Loading />
         </div>
       )}

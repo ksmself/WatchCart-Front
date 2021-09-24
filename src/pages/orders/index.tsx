@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { f7, List, ListInput, Page } from 'framework7-react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
 
@@ -9,8 +9,9 @@ import { sleep } from '@utils';
 import TopNavBar from '@components/TopNavBar';
 import { cartItemsState, totalState } from '@pages/carts';
 import OrderItem from '@components/OrderItem';
-import { updateLineItem, updateOrder } from '@api';
+import { API_URL, updateLineItem, updateOrder } from '@api';
 import { uncompletedOrderState } from '@pages/intro';
+import useAuth from '@hooks/useAuth';
 
 interface FormValues {
   receiver_name: string;
@@ -29,14 +30,26 @@ const OrderSchema = Yup.object().shape({
 });
 
 const OrderIndexPage = ({ f7router }) => {
-  const [total, setTotal] = useRecoilState(totalState);
-  const [cartItems, setCartItems] = useRecoilState(cartItemsState);
+  const { currentUser } = useAuth();
+  const total = useRecoilValue(totalState);
+  const cartItems = useRecoilValue(cartItemsState);
   const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
   const initialValues: FormValues = {
     receiver_name: '',
     receiver_phone: '',
     address1: '',
   };
+
+  useEffect(() => {
+    const getUncompletedOrderId = async () => {
+      const url = `${API_URL}/orders?q[user_id_eq]=${currentUser?.id}&q[status_eq]=orderUncompleted`;
+      const resp = await fetch(url);
+      const body = await resp.json();
+      if (body) setUncompletedOrderId(body[0]?.id || null);
+    };
+
+    getUncompletedOrderId();
+  }, [currentUser]);
 
   const updateCart = useMutation((params) => updateLineItem(params), {
     onError: (error) => {
@@ -54,18 +67,21 @@ const OrderIndexPage = ({ f7router }) => {
       console.log(error);
     },
     onSuccess: (data) => {
-      // lineitem도 수정 필요
-      console.log('order status 외 수정', data);
-      cartItems.map((v) => {
+      cartItems.map((v) =>
         updateCart.mutate({
-          lineitemId: v.id,
+          id: v.id,
           line_item: {
             status: 'complete',
           },
-        });
-      });
+        }),
+      );
     },
   });
+
+  useEffect(() => {
+    console.log(cartItems);
+    console.log(total);
+  }, [cartItems, total]);
 
   return (
     <>
@@ -80,7 +96,7 @@ const OrderIndexPage = ({ f7router }) => {
             setSubmitting(false);
             f7.dialog.preloader('잠시만 기다려주세요...');
             try {
-              makeOrder.mutate({
+              makeOrder.mutateAsync({
                 orderId: uncompletedOrderId,
                 order: {
                   receiver_name: values.receiver_name,

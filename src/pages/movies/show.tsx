@@ -1,12 +1,13 @@
-import { Page, Toolbar, Icon, Link, f7, Button, Popup, Navbar, NavRight } from 'framework7-react';
-import React, { useCallback, useState } from 'react';
+import { Page, Toolbar, Icon, Link, f7, Button } from 'framework7-react';
+import React, { useCallback } from 'react';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
 import { API_URL, getMovie, getDirector, isLiked, likeMovie } from '@api';
 import useAuth from '@hooks/useAuth';
-import SelectOptions from '@components/cart/SelectOptions';
+import Loading from '@components/Loading';
+import OptionPopup from '@components/cart/OptionPopup';
 
 const MovieShowPage = ({ f7route, f7router }) => {
   const movieId = f7route.params.id;
@@ -48,7 +49,6 @@ const MovieShowPage = ({ f7route, f7router }) => {
     }
   }, [isAuthenticated]);
 
-  const [cartNull, setCartNull] = useState(false);
   const onClickBuy = useCallback(() => {
     // 로그인 되어 있지 않다면 모달 띄우기
     if (!isAuthenticated) {
@@ -56,18 +56,17 @@ const MovieShowPage = ({ f7route, f7router }) => {
         f7router.navigate('/mypage'),
       );
     }
-    // setCartNull(false);
   }, [isAuthenticated]);
-
-  const makeOptionsNull = useCallback(() => {
-    setCartNull(true);
-  }, []);
 
   return (
     <Page className="theme-dark">
       <TopNavBar backLink={true} />
-      {movieStatus === 'loading' && <div>Loading...</div>}
-      {movieStatus === 'error' && <div>{movieError}</div>}
+      {movieStatus === 'loading' && (
+        <div className="m-32">
+          <Loading />
+        </div>
+      )}
+      {movieStatus === 'error' && <div className="flex justify-center">{movieError}</div>}
       {movie && (
         <div className="movie-container">
           <img src={`${API_URL}${movie?.image_path}`} alt={movie?.title} />
@@ -122,18 +121,8 @@ const MovieShowPage = ({ f7route, f7router }) => {
               <span>평가하기</span>
             </div>
           </div>
-          {isAuthenticated && (
-            <Popup className="demo-popup-swipe" swipeToClose>
-              <Page className="theme-dark">
-                <Navbar>
-                  <NavRight>
-                    <Link iconF7="xmark" popupClose />
-                  </NavRight>
-                </Navbar>
-                {options && <SelectOptions options={options} cartNull={cartNull} />}
-              </Page>
-            </Popup>
-          )}
+
+          {isAuthenticated && <OptionPopup options={options} f7router={f7router} />}
         </div>
       )}
       <Toolbar tabbar labels position="bottom">

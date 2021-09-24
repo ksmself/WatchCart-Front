@@ -19,6 +19,7 @@ import CategoryShowPage from '@pages/categories/show';
 import CartIndexPage from '@pages/carts';
 import OrderIndexPage from '@pages/orders';
 import OrderCompletePage from '@pages/orders/complete';
+import OrderShowPage from '@pages/orders/show';
 
 const routes = [
   { path: '/', component: IntroPage },
@@ -32,6 +33,7 @@ const routes = [
   { path: '/carts', component: CartIndexPage },
   { path: '/orders', component: OrderIndexPage },
   { path: '/orders/complete', component: OrderCompletePage },
+  { path: '/orders/:id', component: OrderShowPage },
   { path: '/items', component: ItemIndexPage },
   { path: '/items/:id', component: ItemShowPage },
   { path: '/movies/:id', component: MovieShowPage },

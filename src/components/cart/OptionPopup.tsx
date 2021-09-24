@@ -21,6 +21,7 @@ const OptionPopup = ({ options, f7router }) => {
   const [cart, setCart] = useState({});
   const [price, setPrice] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
 
   const sendCart = useMutation(async (params) => await createLineItem(params), {
     onError: (error) => {
@@ -32,9 +33,24 @@ const OptionPopup = ({ options, f7router }) => {
     },
   });
 
+  const sendOrder = useMutation(async (params) => await createLineItem(params), {
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: async (data) => {
+      console.log(data);
+      setShowOrderModal(true);
+    },
+  });
+
   const sendToCart = useCallback(async () => {
     const newValue = await Promise.all(Object.entries(cart).map((v) => v[1]));
     await sendCart.mutateAsync(newValue);
+  }, [cart]);
+
+  const sendToOrder = useCallback(async () => {
+    const newValue = await Promise.all(Object.entries(cart).map((v) => v[1]));
+    await sendOrder.mutateAsync(newValue);
   }, [cart]);
 
   /** 선택된 option 카트에 넣기 */
@@ -45,10 +61,6 @@ const OptionPopup = ({ options, f7router }) => {
       setSelected(nullOption);
     }
   }, [selected]);
-
-  useEffect(() => {
-    console.log('optionCart', cart);
-  }, [cart]);
 
   return (
     <Popup className="demo-popup-swipe" swipeToClose>
@@ -149,45 +161,48 @@ const OptionPopup = ({ options, f7router }) => {
                     <ul>
                       {Object.entries(cart).map(([id, { name, price, quantity }]) => (
                         <li key={id} className="mb-3.5 flex flex-col items-end">
-                          <div className="mx-2 mb-2 flex-1 flex justify-between items-center">
-                            <div className="flex flex-col w-36 text-base font-medium text-white">
+                          <div className="mx-2 py-2 flex-1 flex justify-between items-start">
+                            <div className="flex flex-col justify-center w-36 text-base font-medium text-white">
                               <div className="font-bold w-36 overflow-hidden">{name}</div>
 
                               <p className="font-bold">₩{price}</p>
                             </div>
-                            <Stepper
-                              fill
-                              small
-                              color="#f82f62"
-                              value={quantity}
-                              min={1}
-                              onStepperPlusClick={() => {
-                                setCart({ ...cart, [id]: { ...cart[id], quantity: cart[id].quantity + 1 } });
-                                setPrice((prev) => prev + cart[id].price);
-                              }}
-                              onStepperMinusClick={() => {
-                                if (cart[id].quantity > 1) {
-                                  setCart({ ...cart, [id]: { ...cart[id], quantity: cart[id].quantity - 1 } });
-                                  setPrice((prev) => prev - cart[id].price);
-                                }
-                              }}
-                            />
-                          </div>
-                          <div className="flex pr-2">
-                            <button
-                              type="button"
-                              className="font-bold text-primary hover:text-primary"
-                              onClick={() => {
-                                const sliced = Object.entries(cart).slice();
-                                const filtered = sliced.filter((v) => v[0] !== id);
-                                const mapped = new Map(filtered);
-                                const newCart = Object.fromEntries(mapped);
-                                setCart(newCart);
-                                setPrice((prev) => prev - cart[id].price * cart[id].quantity);
-                              }}
-                            >
-                              삭제
-                            </button>
+                            <div className="flex flex-col items-end">
+                              <Stepper
+                                fill
+                                small
+                                color="#f82f62"
+                                value={quantity}
+                                min={1}
+                                className="mb-2"
+                                onStepperPlusClick={() => {
+                                  setCart({ ...cart, [id]: { ...cart[id], quantity: cart[id].quantity + 1 } });
+                                  setPrice((prev) => prev + cart[id].price);
+                                }}
+                                onStepperMinusClick={() => {
+                                  if (cart[id].quantity > 1) {
+                                    setCart({ ...cart, [id]: { ...cart[id], quantity: cart[id].quantity - 1 } });
+                                    setPrice((prev) => prev - cart[id].price);
+                                  }
+                                }}
+                              />
+                              <div className="flex">
+                                <button
+                                  type="button"
+                                  className="w-12 text-center font-bold text-white bg-primary rounded-md"
+                                  onClick={() => {
+                                    const sliced = Object.entries(cart).slice();
+                                    const filtered = sliced.filter((v) => v[0] !== id);
+                                    const mapped = new Map(filtered);
+                                    const newCart = Object.fromEntries(mapped);
+                                    setCart(newCart);
+                                    setPrice((prev) => prev - cart[id].price * cart[id].quantity);
+                                  }}
+                                >
+                                  삭제
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </li>
                       ))}
@@ -204,7 +219,9 @@ const OptionPopup = ({ options, f7router }) => {
                       <Link className="w-20 py-3 px-2 bg-indigo-500 font-bold" onClick={() => sendToCart()}>
                         장바구니
                       </Link>
-                      <button className="w-20 py-3 px-2 bg-primary font-bold">바로구매</button>
+                      <button className="w-20 py-3 px-2 bg-primary font-bold" onClick={() => sendToOrder()}>
+                        바로구매
+                      </button>
                     </div>
                   </div>
                 )}
@@ -230,6 +247,32 @@ const OptionPopup = ({ options, f7router }) => {
                       popupClose
                     >
                       장바구니 바로가기
+                    </Link>
+                  </div>
+                )}
+
+                {showOrderModal && (
+                  <div className="flex flex-col items-center fixed top-1/3 left-0 right-0 z-50 w-4/5 mx-auto my-0 px-5 pt-12 pb-10 text-indigo-500 bg-black border-4 border-indigo-500 rounded-md">
+                    <div>
+                      <Link
+                        className="absolute top-2 right-2"
+                        iconF7="xmark"
+                        onClick={() => {
+                          setShowOrderModal(false);
+                        }}
+                      />
+                    </div>
+                    <div className="mb-6 text-sm">바로 구매하러 가시겠습니까?</div>
+                    <Link
+                      className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
+                      onClick={() => {
+                        setShowOrderModal(false);
+                        f7router.navigate('/carts');
+                        setCart({});
+                      }}
+                      popupClose
+                    >
+                      바로 구매하기
                     </Link>
                   </div>
                 )}

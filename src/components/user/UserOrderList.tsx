@@ -10,10 +10,7 @@ dayjs.locale('ko');
 
 const UserOrderList = () => {
   const { currentUser } = useAuth();
-  const { data: userInfo, status, error: userInfoError } = useQuery(
-    `userInfo-${currentUser.id}`,
-    getUser(currentUser.id),
-  );
+  const { data: userInfo, status, error } = useQuery(`userInfo-${currentUser.id}`, getUser(currentUser.id));
 
   const [onlyOrder, setOnlyOrder] = useState(null);
   useEffect(() => {
@@ -27,6 +24,7 @@ const UserOrderList = () => {
           <Loading />
         </div>
       )}
+      {status === 'error' && <div className="flex justify-center">{error}</div>}
       {onlyOrder &&
         onlyOrder.map((order) => {
           if (order.status === 'orderCompleted') {

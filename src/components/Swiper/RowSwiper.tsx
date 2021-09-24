@@ -1,8 +1,7 @@
 import React from 'react';
 import { Swiper, SwiperSlide, Link } from 'framework7-react';
-import { useQuery } from 'react-query';
 
-import { getMovies, API_URL } from '@api';
+import { API_URL } from '@api';
 
 const RowSwiper = ({ movies }) => (
   <Swiper navigation speed={500} slidesPerView={3} spaceBetween={20}>

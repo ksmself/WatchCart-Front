@@ -110,22 +110,26 @@ const CartItem = ({ item }) => {
     <li className="mb-3.5">
       <div className="mx-2 mb-2 flex-row">
         <div className="flex flex-row justify-between items-center">
-          <img
-            src={`${API_URL}${item.option.movie.image_path}`}
-            alt={`${item.option.movie.movie_title}`}
-            className="w-20 h-20"
-          />
+          <a href={`/movies/${item.option.movie.id}`}>
+            <img
+              src={`${API_URL}${item.option.movie.image_path}`}
+              alt={`${item.option.movie.movie_title}`}
+              className="w-28 h-28"
+            />
+          </a>
           <div className="flex flex-col text-sm font-medium text-white">
             <div className="mb-2 font-bold text-lg">{item.option.movie.movie_title}</div>
             <div className="mb-1.5 font-normal overflow-hidden">{item.option.name}</div>
-            <p className="mb-0.5 font-normal">₩{item.option.price}</p>
-            <button
-              type="button"
-              className="mb-2 pr-2 text-right font-bold text-primary hover:text-primary"
-              onClick={() => onClickDelete()}
-            >
-              삭제
-            </button>
+            <p className="mb-2 font-normal">₩{item.option.price}</p>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="w-12 mb-3 text-center font-bold text-white bg-primary rounded-md"
+                onClick={() => onClickDelete()}
+              >
+                삭제
+              </button>
+            </div>
             <Stepper
               fill
               small
