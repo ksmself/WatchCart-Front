@@ -109,7 +109,7 @@ export const getLineitems = (orderId) => async () => {
 };
 
 export const getOrder = (orderId) => async () => {
-  const data = await API.get(`/orders?q[order_id_eq]=${orderId}&q[status_eq]=complete`);
+  const data = await API.get(`/orders/${orderId}`);
   return data;
 };
 
