@@ -12,14 +12,14 @@ const ColSwiper = ({ item }) => (
             <Row key={i.id} className="colswiper-row">
               <Col width="50" className="colswiper-col">
                 <Link href={`/movies/${itemArr[idx]?.id}`}>
-                  <img src={`${API_URL}${itemArr[idx]?.image_path}`} alt={itemArr[idx]?.title} />
+                  <img src={`${API_URL}${itemArr[idx]?.image.url}`} alt={itemArr[idx]?.title} />
                 </Link>
                 <div>{itemArr[idx]?.title}</div>
               </Col>
               {idx + 1 < itemArr.length && (
                 <Col width="50" className="colswiper-col">
                   <Link href={`/movies/${itemArr[idx + 1]?.id}`}>
-                    <img src={`${API_URL}${itemArr[idx + 1]?.image_path}`} alt={itemArr[idx + 1]?.title} />
+                    <img src={`${API_URL}${itemArr[idx + 1]?.image.url}`} alt={itemArr[idx + 1]?.title} />
                   </Link>
                   <div>{itemArr[idx + 1]?.title}</div>
                 </Col>
