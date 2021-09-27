@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { BlockTitle, Page, Toolbar } from 'framework7-react';
+import { BlockTitle, Page } from 'framework7-react';
 import { useQuery } from 'react-query';
 
 import TopNavBar from '@components/TopNavBar';
-import BottomToolBarContent from '@components/BottomToolBarContent';
 import { getActor } from '@api';
 import ColSwiper from '@components/Swiper/ColSwiper';
 import Loading from '@components/Loading';
@@ -58,9 +57,6 @@ const ActorShowPage = ({ f7route }) => {
           <ColSwiper item={actor.movies} />
         </>
       )}
-      <Toolbar tabbar labels position="bottom">
-        <BottomToolBarContent currentIdx={0} />
-      </Toolbar>
     </Page>
   );
 };

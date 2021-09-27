@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { Page, Toolbar } from 'framework7-react';
+import { Page } from 'framework7-react';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
 
-import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
 import { API_URL, getOrder } from '@api';
 import Loading from '@components/Loading';
@@ -21,7 +20,7 @@ const OrderShowPage = ({ f7route }) => {
 
   return (
     <Page className="theme-dark">
-      <TopNavBar backLink={false} optionName="WatchCart" />
+      <TopNavBar backLink optionName="Order" />
       {status === 'loading' && (
         <div className="m-32">
           <Loading />
@@ -77,10 +76,6 @@ const OrderShowPage = ({ f7route }) => {
             })}
         </div>
       </div>
-
-      <Toolbar tabbar labels position="bottom">
-        <BottomToolBarContent currentIdx={0} />
-      </Toolbar>
     </Page>
   );
 };

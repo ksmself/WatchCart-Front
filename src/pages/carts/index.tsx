@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { Page, Toolbar } from 'framework7-react';
+import { Page } from 'framework7-react';
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil';
 
 import TopNavBar from '@components/TopNavBar';
-import BottomToolBarContent from '@components/BottomToolBarContent';
 import { API_URL } from '@api';
 import { uncompletedOrderState } from '@pages/intro';
 import CartItem from '@components/cart/CartItem';
@@ -94,9 +93,6 @@ const CartIndexPage = ({ f7router }) => {
           </div>
         </div>
       )}
-      <Toolbar tabbar labels position="bottom">
-        <BottomToolBarContent currentIdx={0} />
-      </Toolbar>
     </Page>
   );
 };

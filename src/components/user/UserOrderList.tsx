@@ -32,7 +32,7 @@ const UserOrderList = () => {
               <div key={order.id} className="px-4 py-5">
                 <div className="border-4 border-primary py-3 px-3.5">
                   <div className="mb-4 font-bold text-base">
-                    {dayjs(order.created_at).format('YYYY년 MM월 DD일')}(주문완료)
+                    {dayjs(order.updated_at).format('YYYY년 MM월 DD일')}(주문완료)
                   </div>
                   <div className="mb-1 font-bold text-primary text-base">* 배송 정보</div>
                   <table className="table-fixed mb-4">

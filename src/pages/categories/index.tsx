@@ -12,7 +12,7 @@ const CategoryIndexPage = () => {
 
   return (
     <Page className="theme-dark">
-      <TopNavBar backLink={true} optionName="Category" />
+      <TopNavBar optionName="Category" />
       {status === 'loading' && (
         <div className="m-32">
           <Loading />

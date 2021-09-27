@@ -27,7 +27,7 @@ const MyPage = ({ f7router }) => {
 
   return (
     <Page className="theme-dark">
-      <TopNavBar backLink={true} />
+      <TopNavBar optionName="My Page" />
       {!isAuthenticated && <LoginForm />}
       {isAuthenticated && (
         <>

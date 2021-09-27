@@ -1,8 +1,7 @@
-import { Page, Toolbar, Icon, Link, f7, Button } from 'framework7-react';
+import { Page, Icon, Link, f7, Button } from 'framework7-react';
 import React, { useCallback } from 'react';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 
-import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
 import { API_URL, getMovie, getDirector, isLiked, likeMovie } from '@api';
 import useAuth from '@hooks/useAuth';
@@ -60,7 +59,7 @@ const MovieShowPage = ({ f7route, f7router }) => {
 
   return (
     <Page className="theme-dark">
-      <TopNavBar backLink={true} />
+      <TopNavBar backLink backLinkForce={true} />
       {movieStatus === 'loading' && (
         <div className="m-32">
           <Loading />
@@ -125,9 +124,6 @@ const MovieShowPage = ({ f7route, f7router }) => {
           {isAuthenticated && <OptionPopup options={options} f7router={f7router} />}
         </div>
       )}
-      <Toolbar tabbar labels position="bottom">
-        <BottomToolBarContent currentIdx={0} />
-      </Toolbar>
     </Page>
   );
 };

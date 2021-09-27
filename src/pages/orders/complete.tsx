@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { Page, Toolbar, Icon } from 'framework7-react';
+import { Page, Icon } from 'framework7-react';
 import { useRecoilValue } from 'recoil';
 
 import TopNavBar from '@components/TopNavBar';
-import BottomToolBarContent from '@components/BottomToolBarContent';
 import { uncompletedOrderState } from '@pages/intro';
 
 const OrderCompletePage = ({ f7router }) => {
@@ -29,9 +28,6 @@ const OrderCompletePage = ({ f7router }) => {
           </button>
         </div>
       </div>
-      <Toolbar tabbar labels position="bottom">
-        <BottomToolBarContent currentIdx={0} />
-      </Toolbar>
     </Page>
   );
 };

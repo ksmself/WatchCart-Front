@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Page, Toolbar, BlockTitle } from 'framework7-react';
+import { Page, BlockTitle } from 'framework7-react';
 import { useQuery } from 'react-query';
 import { Listbox } from '@headlessui/react';
 
 import TopNavBar from '@components/TopNavBar';
-import BottomToolBarContent from '@components/BottomToolBarContent';
 import { getCategory } from '@api';
 import ColSwiper from '@components/Swiper/ColSwiper';
 import Loading from '@components/Loading';
@@ -60,9 +59,6 @@ const CategoryShowPage = ({ f7route }) => {
           <ColSwiper item={category.movies} />
         </>
       )}
-      <Toolbar tabbar labels position="bottom">
-        <BottomToolBarContent currentIdx={1} />
-      </Toolbar>
     </Page>
   );
 };
