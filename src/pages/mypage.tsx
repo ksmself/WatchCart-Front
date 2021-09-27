@@ -10,7 +10,7 @@ import UserInfoEdit from '@components/user/UserInfoEdit';
 import Like from '@components/tab/Like';
 import UserOrderList from '@components/user/UserOrderList';
 
-const MyPage = () => {
+const MyPage = ({ f7router }) => {
   const { currentUser, isAuthenticated, unAuthenticateUser } = useAuth();
 
   const logoutHandler = useCallback(async () => {
@@ -82,7 +82,19 @@ const MyPage = () => {
           {/* Tabs  */}
           <Tabs>
             <Like />
-            <Tab id="tab-2">Tab 2</Tab>
+            <Tab id="tab-2">
+              <div className="flex justify-center mt-24">
+                <Link
+                  className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
+                  onClick={() => {
+                    f7router.navigate('/carts');
+                  }}
+                  popupClose
+                >
+                  장바구니 바로가기
+                </Link>
+              </div>
+            </Tab>
             <Tab id="tab-3">
               <UserOrderList />
             </Tab>
