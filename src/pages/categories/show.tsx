@@ -12,19 +12,31 @@ import SortSelect from '@components/SortSelect';
 
 const CategoryShowPage = ({ f7route }) => {
   const categoryId = f7route.params.id;
-  const { data: category, status, error } = useQuery(`categories-${categoryId}`, getCategory(categoryId));
-
   const options = [
-    { id: 0, name: '전체' },
+    { id: 0, name: '기본순' },
     { id: 1, name: '별점높은순' },
     { id: 2, name: '별점낮은순' },
   ];
   const [selected, setSelected] = useState(options[0].name);
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
-    console.log('sort: ', selected);
-    // ListBox 아래부분을 컴포넌트로 빼보면 어떨까??
+    switch (selected) {
+      case '기본순':
+        setUrl('');
+        break;
+      case '별점높은순':
+        setUrl('?q[s]=stars desc');
+        break;
+      case '별점낮은순':
+        setUrl('?q[s]=stars asc');
+        break;
+      default:
+        break;
+    }
   }, [selected]);
+
+  const { data: category, status, error } = useQuery(`categories-${categoryId}-${url}`, getCategory(categoryId, url));
 
   return (
     <Page className="theme-dark grid-demo">

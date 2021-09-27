@@ -8,7 +8,7 @@ function classNames(...classes) {
 
 const SortSelect = ({ selected, open }) => {
   const options = [
-    { id: 0, name: '전체' },
+    { id: 0, name: '기본순' },
     { id: 1, name: '별점높은순' },
     { id: 2, name: '별점낮은순' },
   ];

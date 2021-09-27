@@ -39,8 +39,8 @@ export const getCategories = () => async () => {
   const { data } = await API.get<Category[]>('/categories');
   return data;
 };
-export const getCategory = (id, params = null) => async () => {
-  const { data } = await API.get<Category>(`/categories/${id}`, { params });
+export const getCategory = (id, url) => async () => {
+  const { data } = await API.get<Category>(`/categories/${id}${url}`);
   return data;
 };
 
@@ -59,12 +59,12 @@ export const getMovie = (movieId) => async () => {
   return data;
 };
 
-export const getDirector = (directorId) => async () => {
-  const { data } = await API.get(`/directors/${directorId}`);
+export const getDirector = (directorId, url) => async () => {
+  const { data } = await API.get(`/directors/${directorId}${url}`);
   return data;
 };
-export const getActor = (actorId) => async () => {
-  const { data } = await API.get(`/actors/${actorId}`);
+export const getActor = (actorId, url) => async () => {
+  const { data } = await API.get(`/actors/${actorId}${url}`);
   return data;
 };
 

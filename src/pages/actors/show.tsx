@@ -12,14 +12,31 @@ import SortSelect from '@components/SortSelect';
 
 const ActorShowPage = ({ f7route }) => {
   const actorId = f7route.params.id;
-  const { data: actor, status, error } = useQuery(`actor-${actorId}`, getActor(actorId));
-
   const options = [
-    { id: 0, name: '전체' },
+    { id: 0, name: '기본순' },
     { id: 1, name: '별점높은순' },
     { id: 2, name: '별점낮은순' },
   ];
   const [selected, setSelected] = useState(options[0].name);
+  const [url, setUrl] = useState('');
+
+  useEffect(() => {
+    switch (selected) {
+      case '기본순':
+        setUrl('');
+        break;
+      case '별점높은순':
+        setUrl('?q[s]=stars desc');
+        break;
+      case '별점낮은순':
+        setUrl('?q[s]=stars asc');
+        break;
+      default:
+        break;
+    }
+  }, [selected]);
+
+  const { data: actor, status, error } = useQuery(`actor-${actorId}-${url}`, getActor(actorId, url));
 
   return (
     <Page className="theme-dark">
