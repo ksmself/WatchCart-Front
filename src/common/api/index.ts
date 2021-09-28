@@ -16,8 +16,9 @@ export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: any) => PlainAPI.post('/login', { user: params });
 export const signupAPI = (params: any) => PlainAPI.post('/signup', { user: params });
 export const logoutAPI = () => API.delete('/logout');
-export const updateUser = (userId, params) => {
-  API.patch(`/users/${userId}`, { user: params });
+export const updateUser = async (params) => {
+  const data = await API.patch(`/users/${params.userId}`, { user: params.user });
+  return data;
 };
 export const getUser = (userId) => async () => {
   const { data } = await API.get(`/users/${userId}`);

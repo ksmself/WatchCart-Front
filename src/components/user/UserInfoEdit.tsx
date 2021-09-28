@@ -1,7 +1,9 @@
 import React from 'react';
+import { useMutation } from 'react-query';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { f7, List, ListInput } from 'framework7-react';
 import * as Yup from 'yup';
+
 import useAuth from '@hooks/useAuth';
 import { sleep } from '@utils';
 import { updateUser } from '@api';
@@ -9,34 +11,44 @@ import { updateUser } from '@api';
 interface FormValues {
   name: string;
   email: string;
-  curPassword: string;
-  newPassword: string;
-  newPassword_confirmation: string;
+  current_password: string;
+  password: string;
+  password_confirmation: string;
 }
 
 const SignUpSchema = Yup.object().shape({
   name: Yup.string().required('필수 입력사항 입니다'),
-  curPassword: Yup.string().required('필수 입력사항 입니다'),
-  newPassword: Yup.string().min(4, '길이가 너무 짧습니다').max(50, '길이가 너무 깁니다'),
-  newPassword_confirmation: Yup.string().when('newPassword', {
-    is: (newPassword) => newPassword?.length > 0,
+  current_password: Yup.string().required('필수 입력사항 입니다'),
+  password: Yup.string().min(4, '길이가 너무 짧습니다').max(50, '길이가 너무 깁니다'),
+  password_confirmation: Yup.string().when('password', {
+    is: (password) => password?.length > 0,
     then: Yup.string()
       .required('필수 입력사항입니다')
       .min(4, '길이가 너무 짧습니다')
       .max(50, '길이가 너무 깁니다')
-      .oneOf([Yup.ref('newPassword'), null], '비밀번호를 다시 확인해주세요'),
+      .oneOf([Yup.ref('password'), null], '비밀번호를 다시 확인해주세요'),
   }),
 });
 
 const UserInfoEdit = () => {
-  const { authenticateUser, currentUser } = useAuth();
+  const { currentUser } = useAuth();
   const initialValues: FormValues = {
     name: currentUser.name,
     email: currentUser.email,
-    curPassword: '',
-    newPassword: '',
-    newPassword_confirmation: '',
+    current_password: '',
+    password: '',
+    password_confirmation: '',
   };
+
+  const updatePassword = useMutation(async (params) => updateUser(params), {
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: async (data) => {
+      console.log(data?.data);
+      f7.dialog.alert(data?.data?.error || '비밀번호가 성공적으로 변경됐습니다.');
+    },
+  });
 
   return (
     <Formik
@@ -47,13 +59,10 @@ const UserInfoEdit = () => {
         setSubmitting(false);
         f7.dialog.preloader('잠시만 기다려주세요...');
         try {
-          const { data: user } = await updateUser(currentUser.id, { user: values });
+          await updatePassword.mutateAsync({ userId: currentUser.id, user: values });
           f7.dialog.close();
-          // 성공적으로 변경됐다면 모달 띄우기
-          // unAuthenticateUser();
         } catch (error) {
-          f7.dialog.close();
-          f7.dialog.alert(error?.response?.data || error?.message);
+          console.log(error);
         }
       }}
       validateOnMount
@@ -83,38 +92,38 @@ const UserInfoEdit = () => {
             <ListInput
               label={i18next.t('현재 비밀번호 (필수 입력)')}
               type="password"
-              name="curPassword"
+              name="current_password"
               placeholder="현재 비밀번호를 입력해주세요"
               clearButton
               onChange={handleChange}
               onBlur={handleBlur}
-              value={values.curPassword}
+              value={values.current_password}
               errorMessageForce
-              errorMessage={touched.curPassword && errors.curPassword}
+              errorMessage={touched.current_password && errors.current_password}
             />
             <ListInput
               label={i18next.t('새 비밀번호')}
               type="password"
-              name="newPassword"
+              name="password"
               placeholder="새 비밀번호를 입력해주세요"
               clearButton
               onChange={handleChange}
               onBlur={handleBlur}
-              value={values.newPassword}
+              value={values.password}
               errorMessageForce
-              errorMessage={touched.newPassword && errors.newPassword}
+              errorMessage={touched.password && errors.password}
             />
             <ListInput
               label={i18next.t('새 비밀번호 확인')}
               type="password"
-              name="newPassword_confirmation"
+              name="password_confirmation"
               placeholder="새 비밀번호를 확인해주세요"
               clearButton
               onChange={handleChange}
               onBlur={handleBlur}
-              value={values.newPassword_confirmation}
+              value={values.password_confirmation}
               errorMessageForce
-              errorMessage={touched.newPassword_confirmation && errors.newPassword_confirmation}
+              errorMessage={touched.password_confirmation && errors.password_confirmation}
             />
           </List>
 
