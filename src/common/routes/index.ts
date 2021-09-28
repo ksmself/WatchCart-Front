@@ -20,6 +20,7 @@ import CartIndexPage from '@pages/carts';
 import OrderIndexPage from '@pages/orders';
 import OrderCompletePage from '@pages/orders/complete';
 import OrderShowPage from '@pages/orders/show';
+import Search from '@pages/search';
 
 const routes = [
   { path: '/', component: IntroPage },
@@ -34,6 +35,7 @@ const routes = [
   { path: '/orders', component: OrderIndexPage },
   { path: '/orders/complete', component: OrderCompletePage },
   { path: '/orders/:id', component: OrderShowPage },
+  { path: '/search', component: Search },
   { path: '/items', component: ItemIndexPage },
   { path: '/items/:id', component: ItemShowPage },
   { path: '/movies/:id', component: MovieShowPage },

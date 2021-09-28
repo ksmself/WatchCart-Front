@@ -13,6 +13,10 @@ const TopNavBar = ({ f7router, backLink, optionName, cartCount, currentUser, cen
     }
   }, [currentUser]);
 
+  const onClickSearch = useCallback(() => {
+    f7router.navigate('/search');
+  }, []);
+
   return (
     <Navbar className="theme-dark">
       {!backLink && !optionName && (
@@ -26,7 +30,7 @@ const TopNavBar = ({ f7router, backLink, optionName, cartCount, currentUser, cen
           </NavLeft>
           <NavTitle className="title">WatchCart</NavTitle>
           <NavRight>
-            <Link iconF7="search" />
+            <Link iconF7="search" onClick={() => onClickSearch()} />
           </NavRight>
         </>
       )}
