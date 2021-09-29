@@ -33,7 +33,7 @@ const Search = () => {
               className="block w-full h-8 pl-2.5 py-1 rounded-sm text-white bg-gray-800"
               value={keyword}
               onChange={(e) => onChangeKeyword(e)}
-              placeholder="영화 제목을 검색해보세요."
+              placeholder="제목, 감독, 배우로 검색"
             />
           </div>
           <button className="w-10" onClick={() => setOpen(false)}>

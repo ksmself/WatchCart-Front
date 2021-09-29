@@ -51,7 +51,7 @@ export const getMovies = (categoryId) => async () => {
 };
 
 export const getMoviesByKeyword = (params) => async () => {
-  const { data } = await API.get(`/movies?q[title_cont]=${params}`);
+  const { data } = await API.get(`/movies/search?q=${params}`);
   return data;
 };
 
