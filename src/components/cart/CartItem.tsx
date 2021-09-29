@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Stepper } from 'framework7-react';
 import { useRecoilState } from 'recoil';
 import { cartItemsState } from '@pages/carts';
@@ -7,8 +7,9 @@ import { API_URL, deleteLineItem, updateLineItem } from '@api';
 
 const CartItem = ({ item }) => {
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
+  const [check, setCheck] = useState(true);
 
-  const updateCart = useMutation(async (params) => await updateLineItem(params), {
+  const updateCart = useMutation((params) => updateLineItem(params), {
     onError: (error) => {
       console.log(error);
     },
@@ -76,7 +77,7 @@ const CartItem = ({ item }) => {
     }
   }, [cartItems]);
 
-  const deleteCart = useMutation(async (params) => await deleteLineItem(params), {
+  const deleteCart = useMutation((params) => deleteLineItem(params), {
     onError: (error) => {
       console.log(error);
     },
@@ -106,17 +107,47 @@ const CartItem = ({ item }) => {
     console.log('cartItems: ', cartItems);
   }, [cartItems]);
 
+  const handleClick = useCallback(() => {
+    setCheck((prev) => !prev);
+  }, []);
+
+  useEffect(async () => {
+    try {
+      const sliced = cartItems.slice();
+      const newValue = await Promise.all(
+        sliced.map((v) => {
+          if (v.id === item.id) {
+            return {
+              ...v,
+              check,
+            };
+          }
+          return v;
+        }),
+      );
+      await setCartItems(newValue);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [check]);
+
   return (
     <li className="mb-3.5">
       <div className="mx-2 mb-2 flex-row">
         <div className="flex flex-row justify-between items-center">
-          <a href={`/movies/${item.option.movie.id}`}>
-            <img
-              src={`${API_URL}${item.option.movie.image_path}`}
-              alt={`${item.option.movie.movie_title}`}
-              className="w-28 h-28"
-            />
-          </a>
+          <div className="flex flex-row">
+            <label className="item-checkbox item-content">
+              <input type="checkbox" name="demo-checkbox" checked={check} onClick={() => handleClick()} />
+              <i className="icon icon-checkbox" />
+            </label>
+            <a href={`/movies/${item.option.movie.id}`}>
+              <img
+                src={`${API_URL}${item.option.movie.image_path}`}
+                alt={`${item.option.movie.movie_title}`}
+                className="w-28 h-28"
+              />
+            </a>
+          </div>
           <div className="flex flex-col text-sm font-medium text-white">
             <div className="mb-2 font-bold text-lg">{item.option.movie.movie_title}</div>
             <div className="mb-1.5 font-normal overflow-hidden">{item.option.name}</div>

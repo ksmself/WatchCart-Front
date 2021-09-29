@@ -104,13 +104,18 @@ export const updateLineItem = async (params) => {
   return data;
 };
 
-export const deleteLineItem = (lineitemId) => {
-  const data = API.delete(`/lineitems/${lineitemId}`);
+export const deleteLineItem = async (lineitemId) => {
+  const data = await API.delete(`/lineitems/${lineitemId}`);
   return data;
 };
 
 export const getLineitems = (orderId) => async () => {
   const data = await API.get(`/lineitems?q[order_id_eq]=${orderId}&q[status_eq]=complete`);
+  return data;
+};
+
+export const createOrder = async (params) => {
+  const data = await API.post('/orders', { user_id: params });
   return data;
 };
 

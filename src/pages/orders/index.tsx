@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { f7, List, ListInput, Page } from 'framework7-react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -9,7 +9,7 @@ import { sleep } from '@utils';
 import TopNavBar from '@components/TopNavBar';
 import { cartItemsState, totalState } from '@pages/carts';
 import OrderItem from '@components/OrderItem';
-import { API_URL, updateLineItem, updateOrder } from '@api';
+import { API_URL, createOrder, updateLineItem, updateOrder } from '@api';
 import { uncompletedOrderState } from '@pages/intro';
 import useAuth from '@hooks/useAuth';
 
@@ -30,16 +30,26 @@ const OrderSchema = Yup.object().shape({
 });
 
 const OrderIndexPage = ({ f7router }) => {
-  const { currentUser } = useAuth();
-  const total = useRecoilValue(totalState);
-  const cartItems = useRecoilValue(cartItemsState);
-  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
   const initialValues: FormValues = {
     receiver_name: '',
     receiver_phone: '',
     address1: '',
   };
 
+  const total = useRecoilValue(totalState);
+  const cartItems = useRecoilValue(cartItemsState);
+
+  // selected는 check된 아이템
+  const selected = cartItems.filter((v) => v.check === undefined || v.check === true);
+
+  // cartItems 전부가 select 되었다면 allChecked는 true
+  const allChecked = selected.length === cartItems.length;
+
+  // selectedTotal: select 합계
+  const selectedTotal = selected.reduce((acc, cur) => acc + cur.option.price * cur.quantity, 0);
+
+  const { currentUser } = useAuth();
+  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
   useEffect(() => {
     const getUncompletedOrderId = async () => {
       const url = `${API_URL}/orders?q[user_id_eq]=${currentUser?.id}&q[status_eq]=orderUncompleted`;
@@ -56,9 +66,10 @@ const OrderIndexPage = ({ f7router }) => {
       console.log(error);
     },
     onSuccess: (data) => {
-      // 성공적으로 수정함
-      console.log('line_item status 수정', data?.data);
-      f7router.navigate('/orders/complete');
+      // line_item의 status가 complete 될 때
+      console.log(data.data);
+      // data.data.order_id를 넘겨줘야 함
+      f7router.navigate(`/orders/complete/${data?.data?.order_id}`);
     },
   });
 
@@ -67,21 +78,72 @@ const OrderIndexPage = ({ f7router }) => {
       console.log(error);
     },
     onSuccess: (data) => {
-      cartItems.map((v) =>
-        updateCart.mutate({
-          id: v.id,
-          line_item: {
-            status: 'complete',
-          },
-        }),
-      );
+      if (allChecked) {
+        cartItems.map((v) =>
+          updateCart.mutate({
+            id: v.id,
+            line_item: {
+              status: 'complete',
+            },
+          }),
+        );
+      } else {
+        selected.map((v) =>
+          updateCart.mutate({
+            id: v.id,
+            line_item: {
+              status: 'complete',
+            },
+          }),
+        );
+      }
     },
   });
 
+  // allChecked가 아니라면 new Order를 만들어줘야 함
+  const [newOrderId, setNewOrderId] = useState(null);
+
+  // 새로운 order를 위해 필요한 values
+  const [values, setValues] = useState(null);
+  // 새로운 order가 completedOrder가 되고자 할 때 사용
+  const updateSelected = useMutation((params) => updateLineItem(params), {
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      if (newOrderId !== null) {
+        makeOrder.mutateAsync({
+          orderId: newOrderId,
+          order: {
+            receiver_name: values.receiver_name,
+            receiver_phone: values.receiver_phone,
+            address1: values.address1,
+            total: selectedTotal,
+            status: 'orderCompleted',
+          },
+        });
+      }
+    },
+  });
+
+  // 새로운 order 생성
+  const createNewOrder = useMutation((params) => createOrder(params), {
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      setNewOrderId(data?.data?.id);
+    },
+  });
+
+  // selected의 order_id를 newOrderId로 바꿔줌(단, newOrderId가 null이 아닐때만)
   useEffect(() => {
-    console.log(cartItems);
-    console.log(total);
-  }, [cartItems, total]);
+    if (newOrderId !== null) {
+      selected.map((v) => {
+        updateSelected.mutateAsync({ id: v.id, line_item: { order_id: newOrderId } });
+      });
+    }
+  }, [newOrderId]);
 
   return (
     <>
@@ -92,20 +154,27 @@ const OrderIndexPage = ({ f7router }) => {
           initialValues={initialValues}
           validationSchema={OrderSchema}
           onSubmit={async (values, { setSubmitting }: FormikHelpers<FormValues>) => {
+            setValues(values);
             await sleep(400);
             setSubmitting(false);
             f7.dialog.preloader('잠시만 기다려주세요...');
             try {
-              makeOrder.mutateAsync({
-                orderId: uncompletedOrderId,
-                order: {
-                  receiver_name: values.receiver_name,
-                  receiver_phone: values.receiver_phone,
-                  address1: values.address1,
-                  total: total,
-                  status: 'orderCompleted',
-                },
-              });
+              if (allChecked) {
+                // allChecked이면 지금과 같은 방식으로
+                makeOrder.mutateAsync({
+                  orderId: uncompletedOrderId,
+                  order: {
+                    receiver_name: values.receiver_name,
+                    receiver_phone: values.receiver_phone,
+                    address1: values.address1,
+                    total: total,
+                    status: 'orderCompleted',
+                  },
+                });
+              } else {
+                createNewOrder.mutateAsync(currentUser?.id);
+              }
+
               f7.dialog.close();
             } catch (error) {
               f7.dialog.close();
@@ -158,7 +227,7 @@ const OrderIndexPage = ({ f7router }) => {
               {/* 주문 상품 */}
               <div className="px-2 mt-8">
                 <div className="mb-3 font-bold text-primary text-base">* 주문 상품</div>
-                {cartItems.map((item) => (
+                {selected.map((item) => (
                   <OrderItem key={item.id} item={item} />
                 ))}
               </div>
@@ -169,7 +238,7 @@ const OrderIndexPage = ({ f7router }) => {
                   className="button button-fill button-large disabled:opacity-50 login-button"
                   disabled={isSubmitting || !isValid}
                 >
-                  {total}원 결제하기
+                  {selectedTotal}원 결제하기
                 </button>
               </div>
             </Form>
