@@ -116,14 +116,8 @@
   padding: 0 30px;
 }
 
-.movie-btn > div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.movie-btn > div > a {
-  margin-bottom: 10px;
+.x-btn {
+  left: 33.3%;
 }
 
 .buy > i {

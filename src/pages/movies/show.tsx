@@ -1,5 +1,5 @@
 import { Page, Icon, Link, f7, Button } from 'framework7-react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 
 import TopNavBar from '@components/TopNavBar';
@@ -57,6 +57,38 @@ const MovieShowPage = ({ f7route, f7router }) => {
     }
   }, [isAuthenticated]);
 
+  const [rateOpen, setRateOpen] = useState(false);
+  const onClickRate = useCallback(() => {
+    // 로그인 되어 있지 않다면 모달 띄우기
+    if (!isAuthenticated) {
+      f7.dialog.confirm('로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?', 'WatchCart', () =>
+        f7router.navigate('/mypage'),
+      );
+    } else {
+      // 구매자가 아닐때는 상품을 구매하신 후에 평가할 수 있다고 모달 띄우기
+
+      // 구매자일때
+      setRateOpen(true);
+    }
+  }, [isAuthenticated]);
+
+  const [hasPurchased, setHasPurchased] = useState(true);
+  const [up, setUp] = useState(false);
+  const [down, setDown] = useState(false);
+  const thumbsUp = useCallback(() => {
+    if (hasPurchased) {
+      if (down) setDown(false);
+      setUp((prev) => !prev);
+    }
+  }, [hasPurchased, down]);
+
+  const thumbsDown = useCallback(() => {
+    if (hasPurchased) {
+      if (up) setUp(false);
+      setDown((prev) => !prev);
+    }
+  }, [hasPurchased, up]);
+
   return (
     <Page className="theme-dark">
       <TopNavBar backLink backLinkForce={true} />
@@ -66,6 +98,7 @@ const MovieShowPage = ({ f7route, f7router }) => {
         </div>
       )}
       {movieStatus === 'error' && <div className="flex justify-center">{movieError}</div>}
+      {likeStatus === 'error' && <div className="flex justify-center">{likeError}</div>}
       {movie && (
         <div className="movie-container">
           <img src={`${API_URL}${movie?.image_path}`} alt={movie?.title} />
@@ -97,28 +130,48 @@ const MovieShowPage = ({ f7route, f7router }) => {
               ))}
             </div>
           </div>
-          <div className="movie-btn">
-            <div>
+          <div className="movie-btn relative">
+            <div className="flex flex-col items-center">
               <Link
+                className="mb-4"
                 style={{ color: liked ? '#f82f62' : '#fff' }}
                 iconF7={liked ? 'checkmark_alt' : 'plus'}
                 onClick={onClickLike}
               />
               <span style={{ color: liked ? '#f82f62' : '#fff' }}>보고싶어요</span>
             </div>
-            <div>
+            <div className="flex flex-col items-center">
               <Button
                 iconF7="cart_badge_plus"
-                className="buy"
+                className="buy mb-4"
                 popupOpen=".demo-popup-swipe"
                 onClick={() => onClickBuy()}
               />
               <span>구매하기</span>
             </div>
-            <div>
-              <Link iconF7="star" className="star" onClick={() => console.log('평가하기')} />
+            <div className="flex flex-col items-center">
+              <Link iconF7="star" className="star mb-4" onClick={() => onClickRate()} />
               <span>평가하기</span>
             </div>
+            {rateOpen && (
+              <div className="absolute -top-14 right-1 flex z-10">
+                <Button
+                  iconF7="xmark_circle"
+                  className="x-btn absolute -top-9 left-0 p-0"
+                  onClick={() => setRateOpen(false)}
+                />
+                <Button
+                  iconF7={up ? 'hand_thumbsup_fill' : 'hand_thumbsup'}
+                  className="w-12 h-12 mr-2 border rounded-full bg-black"
+                  onClick={() => thumbsUp()}
+                />
+                <Button
+                  iconF7={down ? 'hand_thumbsdown_fill' : 'hand_thumbsdown'}
+                  className="w-12 h-12 border rounded-full bg-black"
+                  onClick={() => thumbsDown()}
+                />
+              </div>
+            )}
           </div>
 
           {isAuthenticated && <OptionPopup options={options} f7router={f7router} />}
