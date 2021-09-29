@@ -34,7 +34,7 @@ const TopNavBar = ({ f7router, backLink, optionName, cartCount, currentUser, cen
           </NavRight>
         </>
       )}
-      {backLink && <NavLeft backLink="Back" className="back" />}
+      {backLink && <NavLeft backLink="Back" className="back" backLinkForce />}
       {optionName && <NavTitle className="title">{optionName}</NavTitle>}
     </Navbar>
   );
