@@ -21,7 +21,7 @@ const OrderShowPage = ({ f7route }) => {
 
   return (
     <Page className="theme-dark">
-      <TopNavBar backLink={false} optionName="WatchCart" />
+      <TopNavBar backLink optionName="WatchCart" />
       {status === 'loading' && (
         <div className="m-32">
           <Loading />

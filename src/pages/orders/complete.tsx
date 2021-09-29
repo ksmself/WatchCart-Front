@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Page, Toolbar, Icon } from 'framework7-react';
-import { useRecoilValue } from 'recoil';
 
 import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
-import { uncompletedOrderState } from '@pages/intro';
 
-const OrderCompletePage = ({ f7router }) => {
-  const uncompletedOrderId = useRecoilValue(uncompletedOrderState);
+const OrderCompletePage = ({ f7router, f7route }) => {
+  const orderId = f7route.params.id;
 
   return (
     <Page className="theme-dark">
@@ -20,7 +18,7 @@ const OrderCompletePage = ({ f7router }) => {
         <div className="flex flex-row">
           <button
             className="px-4 py-2 font-bold bg-indigo-500 break-word"
-            onClick={() => f7router.navigate(`/orders/${uncompletedOrderId}`)}
+            onClick={() => f7router.navigate(`/orders/${orderId}`)}
           >
             주문내역 확인하기
           </button>

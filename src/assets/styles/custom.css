@@ -181,6 +181,15 @@
   color: #f82f62;
 }
 
+/* Cart Item */
+.check-box input[type='checkbox']:checked {
+  background-color: #f82f62;
+}
+
+label.item-checkbox > .icon-checkbox {
+  margin-right: 0.5rem;
+}
+
 /* LogIn Page */
 .login-form {
   width: 90%;

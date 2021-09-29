@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Page, Toolbar } from 'framework7-react';
+import React, { useEffect, useState } from 'react';
+import { f7, Page, Toolbar } from 'framework7-react';
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil';
 
 import TopNavBar from '@components/TopNavBar';
@@ -28,6 +28,7 @@ const CartIndexPage = ({ f7router }) => {
   const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
   const total = useRecoilValue(totalState);
+  const [selectTotal, setSelectTotal] = useState(0);
 
   useEffect(() => {
     const getUncompletedOrderId = async () => {
@@ -52,9 +53,14 @@ const CartIndexPage = ({ f7router }) => {
   }, [uncompletedOrderId]);
 
   useEffect(() => {
-    console.log(cartItems);
-    console.log(total);
-  }, [cartItems, total]);
+    const filtered = cartItems.filter((v) => v.check === undefined || v.check === true);
+    const newTotal = filtered.reduce((acc, cur) => acc + cur.option.price * cur.quantity, 0);
+    setSelectTotal(newTotal);
+  }, [cartItems]);
+
+  useEffect(() => {
+    console.log('selected', selectTotal);
+  }, [selectTotal]);
 
   return (
     <Page className="theme-dark">
@@ -66,7 +72,7 @@ const CartIndexPage = ({ f7router }) => {
       )}
       {cartItems?.length > 0 &&
         cartItems.map((item) => (
-          <div className="pt-2 px-4" key={item.id}>
+          <div className="pt-2 px-3" key={item.id}>
             <div className="my-2">
               <div className="flow-root">
                 <ul>
@@ -81,12 +87,15 @@ const CartIndexPage = ({ f7router }) => {
           <div className="flex flex-row justify-between">
             <div>
               <div className="text-base font-semibold text-white">총 상품금액</div>
-              <div className="text-primary text-xl font-bold">₩ {total}</div>
+              <div className="text-primary text-xl font-bold">₩ {selectTotal}</div>
             </div>
             <div className="flex flex-row items-center">
               <button
                 className="w-36 py-3 px-2 mb-10 bg-indigo-500 font-bold"
-                onClick={() => f7router.navigate('/orders')}
+                onClick={() => {
+                  if (selectTotal > 0) f7router.navigate('/orders');
+                  else f7.dialog.alert('상품을 선택해주세요!');
+                }}
               >
                 바로구매
               </button>
