@@ -26,7 +26,6 @@ const CartIndexPage = ({ f7router }) => {
   const { currentUser } = useAuth();
   const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);
-  const total = useRecoilValue(totalState);
   const [selectTotal, setSelectTotal] = useState(0);
 
   useEffect(() => {

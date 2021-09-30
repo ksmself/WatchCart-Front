@@ -3,8 +3,12 @@ import { useMutation } from 'react-query';
 import { Transition, Listbox } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import { Popup, Page, Navbar, NavRight, Link, Stepper } from 'framework7-react';
+import { useRecoilState } from 'recoil';
 
-import { createLineItem } from '@api';
+import { createLineItem, API_URL } from '@api';
+import { cartItemsState } from '@pages/carts';
+import useAuth from '@hooks/useAuth';
+import { uncompletedOrderState } from '@pages/intro';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -18,26 +22,57 @@ const OptionPopup = ({ options, f7router }) => {
   };
   options = [nullOption, ...options];
   const [selected, setSelected] = useState(options[0]);
+
   const [cart, setCart] = useState({});
   const [price, setPrice] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [quick, setQuick] = useState(false);
 
-  const sendCart = useMutation(async (params) => await createLineItem(params), {
+  const { currentUser } = useAuth();
+  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
+  const [cartItems, setCartItems] = useRecoilState(cartItemsState);
+
+  useEffect(() => {
+    const getUncompletedOrderId = async () => {
+      const url = `${API_URL}/orders?q[user_id_eq]=${currentUser?.id}&q[status_eq]=orderUncompleted`;
+      const resp = await fetch(url);
+      const body = await resp.json();
+      if (body) setUncompletedOrderId(body[0]?.id || null);
+    };
+
+    getUncompletedOrderId();
+  }, [currentUser]);
+
+  useEffect(() => {
+    const getCartItems = async () => {
+      const url = `${API_URL}/lineitems?q[order_id_eq]=${uncompletedOrderId}&q[status_eq]=uncomplete`;
+      const resp = await fetch(url);
+      const body = await resp.json();
+      setCartItems(body);
+    };
+
+    getCartItems();
+  }, [uncompletedOrderId, showOrderModal]);
+
+  const sendCart = useMutation((params) => createLineItem(params), {
     onError: (error) => {
       console.log(error);
     },
     onSuccess: (data) => {
       console.log(data);
-      setShowModal(true);
+      if (!quick) setShowModal(true);
+      if (quick) {
+        setShowOrderModal(true);
+      }
     },
   });
 
-  const sendOrder = useMutation(async (params) => await createLineItem(params), {
+  const sendOrder = useMutation((params) => createLineItem(params), {
     onError: (error) => {
       console.log(error);
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       console.log(data);
       setShowOrderModal(true);
     },
@@ -49,9 +84,14 @@ const OptionPopup = ({ options, f7router }) => {
   }, [cart]);
 
   const sendToOrder = useCallback(async () => {
-    const newValue = await Promise.all(Object.entries(cart).map((v) => v[1]));
-    await sendOrder.mutateAsync(newValue);
+    // const newValue = await Promise.all(Object.entries(cart).map((v) => v[1]));
+    // await sendOrder.mutateAsync(newValue);
   }, [cart]);
+
+  const onClickQuick = useCallback(() => {
+    setQuick(true);
+    sendToCart();
+  }, []);
 
   /** 선택된 option 카트에 넣기 */
   useEffect(() => {
@@ -61,6 +101,10 @@ const OptionPopup = ({ options, f7router }) => {
       setSelected(nullOption);
     }
   }, [selected]);
+
+  useEffect(() => {
+    console.log('cartItems: ', cartItems);
+  }, [cartItems]);
 
   return (
     <Popup className="demo-popup-swipe" swipeToClose>
@@ -219,7 +263,7 @@ const OptionPopup = ({ options, f7router }) => {
                       <Link className="w-20 py-3 px-2 bg-indigo-500 font-bold" onClick={() => sendToCart()}>
                         장바구니
                       </Link>
-                      <button className="w-20 py-3 px-2 bg-primary font-bold" onClick={() => sendToOrder()}>
+                      <button className="w-20 py-3 px-2 bg-primary font-bold" onClick={() => onClickQuick()}>
                         바로구매
                       </button>
                     </div>
@@ -267,7 +311,7 @@ const OptionPopup = ({ options, f7router }) => {
                       className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
                       onClick={() => {
                         setShowOrderModal(false);
-                        f7router.navigate('/carts');
+                        f7router.navigate('/orders');
                         setCart({});
                       }}
                       popupClose
