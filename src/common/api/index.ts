@@ -84,18 +84,28 @@ export const isLiked = (movieId) => async () => {
   return data;
 };
 
+export const goodMovie = (movieId) => {
+  const data = API.post(`/movies/${movieId}/good`);
+  return data;
+};
+
+export const isGood = (movieId) => async () => {
+  const { data } = await API.get(`/movies/${movieId}/good`);
+  return data;
+};
+
+export const badMovie = (movieId) => {
+  const data = API.post(`/movies/${movieId}/bad`);
+  return data;
+};
+
+export const isBad = (movieId) => async () => {
+  const { data } = await API.get(`/movies/${movieId}/bad`);
+  return data;
+};
+
 export const createLineItem = async (params) => {
   const data = await API.post('/lineitems', { line_item: params });
-  return data;
-};
-
-export const getLineitemInfo = (orderId) => async () => {
-  const data = await API.get(`/lineitems/${orderId}`);
-  return data;
-};
-
-export const getLineitem = (orderId) => async () => {
-  const data = await API.get(`/lineitems?q[order_id_eq]=${orderId}`);
   return data;
 };
 
@@ -106,11 +116,6 @@ export const updateLineItem = async (params) => {
 
 export const deleteLineItem = async (lineitemId) => {
   const data = await API.delete(`/lineitems/${lineitemId}`);
-  return data;
-};
-
-export const getLineitems = (orderId) => async () => {
-  const data = await API.get(`/lineitems?q[order_id_eq]=${orderId}&q[status_eq]=complete`);
   return data;
 };
 

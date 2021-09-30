@@ -1,9 +1,9 @@
 import { Page, Icon, Link, f7, Button } from 'framework7-react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 
 import TopNavBar from '@components/TopNavBar';
-import { API_URL, getMovie, getDirector, isLiked, likeMovie } from '@api';
+import { API_URL, getMovie, getDirector, isLiked, likeMovie, goodMovie, badMovie, isGood, isBad } from '@api';
 import useAuth from '@hooks/useAuth';
 import Loading from '@components/Loading';
 import OptionPopup from '@components/cart/OptionPopup';
@@ -12,9 +12,12 @@ const MovieShowPage = ({ f7route, f7router }) => {
   const movieId = f7route.params.id;
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
+  const [rateOpen, setRateOpen] = useState(false);
 
   const { data: movie, status: movieStatus, error: movieError } = useQuery(`movie-${movieId}`, getMovie(movieId));
   const { data: liked, status: likeStatus, error: likeError } = useQuery(`like-${movieId}`, isLiked(movieId));
+  const { data: movieIsGood, status: goodStatus, error: goodError } = useQuery(`good-${movieId}`, isGood(movieId));
+  const { data: movieIsBad, status: badStatus, error: badError } = useQuery(`bad-${movieId}`, isBad(movieId));
 
   const directorId = movie?.director_id;
   const { data: director, status: directorStatus, error: directorError } = useQuery(
@@ -32,6 +35,28 @@ const MovieShowPage = ({ f7route, f7router }) => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(`like-${movieId}`, data.data);
+    },
+  });
+
+  const good = useMutation(goodMovie, {
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(`good-${movieId}`, data.data);
+      // delay 주고 close
+      setRateOpen(false);
+    },
+  });
+
+  const bad = useMutation(badMovie, {
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(`bad-${movieId}`, data.data);
+      // delay 주고 close
+      setRateOpen(false);
     },
   });
 
@@ -57,7 +82,6 @@ const MovieShowPage = ({ f7route, f7router }) => {
     }
   }, [isAuthenticated]);
 
-  const [rateOpen, setRateOpen] = useState(false);
   const onClickRate = useCallback(() => {
     // 로그인 되어 있지 않다면 모달 띄우기
     if (!isAuthenticated) {
@@ -65,29 +89,20 @@ const MovieShowPage = ({ f7route, f7router }) => {
         f7router.navigate('/mypage'),
       );
     } else {
-      // 구매자가 아닐때는 상품을 구매하신 후에 평가할 수 있다고 모달 띄우기
-
-      // 구매자일때
-      setRateOpen(true);
+      // setRateOpen(true);
+      if (movieIsGood) good.mutate(movieId);
+      if (movieIsBad) bad.mutate(movieId);
+      if (!movieIsGood && !movieIsBad) setRateOpen(true);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, movieIsGood, movieIsBad]);
 
-  const [hasPurchased, setHasPurchased] = useState(true);
-  const [up, setUp] = useState(false);
-  const [down, setDown] = useState(false);
   const thumbsUp = useCallback(() => {
-    if (hasPurchased) {
-      if (down) setDown(false);
-      setUp((prev) => !prev);
-    }
-  }, [hasPurchased, down]);
+    good.mutate(movieId);
+  }, []);
 
   const thumbsDown = useCallback(() => {
-    if (hasPurchased) {
-      if (up) setUp(false);
-      setDown((prev) => !prev);
-    }
-  }, [hasPurchased, up]);
+    bad.mutate(movieId);
+  }, []);
 
   return (
     <Page className="theme-dark">
@@ -150,8 +165,13 @@ const MovieShowPage = ({ f7route, f7router }) => {
               <span>구매하기</span>
             </div>
             <div className="flex flex-col items-center">
-              <Link iconF7="star" className="star mb-4" onClick={() => onClickRate()} />
-              <span>평가하기</span>
+              <Link
+                style={{ color: movieIsGood || movieIsBad ? '#f82f62' : '#fff' }}
+                iconF7={movieIsGood ? 'hand_thumbsup_fill' : movieIsBad ? 'hand_thumbsdown_fill' : 'star'}
+                className="star mb-4"
+                onClick={() => onClickRate()}
+              />
+              <span style={{ color: movieIsGood || movieIsBad ? '#f82f62' : '#fff' }}>평가하기</span>
             </div>
             {rateOpen && (
               <div className="absolute -top-14 right-1 flex z-10">
@@ -161,12 +181,12 @@ const MovieShowPage = ({ f7route, f7router }) => {
                   onClick={() => setRateOpen(false)}
                 />
                 <Button
-                  iconF7={up ? 'hand_thumbsup_fill' : 'hand_thumbsup'}
+                  iconF7={movieIsGood ? 'hand_thumbsup_fill' : 'hand_thumbsup'}
                   className="w-12 h-12 mr-2 border rounded-full bg-black"
                   onClick={() => thumbsUp()}
                 />
                 <Button
-                  iconF7={down ? 'hand_thumbsdown_fill' : 'hand_thumbsdown'}
+                  iconF7={movieIsBad ? 'hand_thumbsdown_fill' : 'hand_thumbsdown'}
                   className="w-12 h-12 border rounded-full bg-black"
                   onClick={() => thumbsDown()}
                 />
