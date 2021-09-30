@@ -91,7 +91,7 @@ const OptionPopup = ({ options, f7router }) => {
   const onClickQuick = useCallback(() => {
     setQuick(true);
     sendToCart();
-  }, []);
+  }, [cart]);
 
   /** 선택된 option 카트에 넣기 */
   useEffect(() => {
@@ -167,7 +167,7 @@ const OptionPopup = ({ options, f7router }) => {
                               >
                                 {({ selected, active }) => (
                                   <>
-                                    <div className="flex items-center">
+                                    <div className="flex items-center hover:text-indigo-500">
                                       <span
                                         className={classNames(
                                           selected ? 'ml-3 font-semibold' : 'ml-3 font-semibold',

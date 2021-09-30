@@ -279,6 +279,11 @@ label.item-checkbox > .icon-checkbox {
   background-color: #f82f62;
 }
 
+.tabLink-star > .tab-link-active {
+  border: 2px solid #f82f62;
+  background-color: #f82f62;
+}
+
 /* 정보 수정 */
 .tab-active .login-form {
   margin-top: 0;

@@ -5,7 +5,7 @@ import { API_URL } from '@api';
 
 const ColSwiper = ({ item }) => (
   <>
-    <Block className="colswiper-block">
+    <Block className="colswiper-block mb-10">
       {item?.map((i, idx, itemArr) => {
         if (idx % 2 === 0) {
           return (

@@ -97,7 +97,7 @@ const IntroPage = ({ f7router }) => {
                 (category) =>
                   category.movies.length !== 0 && (
                     <div className="category-box" key={category?.id}>
-                      <BlockTitle className="block-title">{category?.title}</BlockTitle>
+                      <BlockTitle className="mb-2 font-bold">{category?.title}</BlockTitle>
                       <RowSwiper movies={category.movies} />
                     </div>
                   ),
@@ -106,7 +106,7 @@ const IntroPage = ({ f7router }) => {
           <Block />
         </div>
       )}
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-10">
         <button
           ref={loadMoreButtonRef}
           className="font-bold text-primary"

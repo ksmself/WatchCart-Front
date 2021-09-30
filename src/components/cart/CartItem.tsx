@@ -143,14 +143,14 @@ const CartItem = ({ item }) => {
             <a href={`/movies/${item.option.movie.id}`}>
               <img
                 src={`${API_URL}${item.option.movie.image_path}`}
-                alt={`${item.option.movie.movie_title}`}
+                alt={`${item.option.movie.title}`}
                 className="w-28 h-28"
               />
             </a>
           </div>
           <div className="flex flex-col text-sm font-medium text-white">
-            <div className="mb-2 font-bold text-lg">{item.option.movie.movie_title}</div>
             <div className="mb-1.5 font-normal overflow-hidden">{item.option.name}</div>
+            <div className="text-xs mb-2 text-gray-300">{item.option.movie.title}</div>
             <p className="mb-2 font-normal">₩{item.option.price}</p>
             <div className="flex justify-end">
               <button

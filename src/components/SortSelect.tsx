@@ -46,7 +46,7 @@ const SortSelect = ({ selected, open }) => {
               >
                 {({ selected, active }) => (
                   <>
-                    <div className="flex items-center">
+                    <div className="flex items-center hover:text-indigo-500">
                       <span
                         className={classNames(selected ? 'ml-3 font-semibold' : 'ml-3 font-semibold', 'block truncate')}
                       >
