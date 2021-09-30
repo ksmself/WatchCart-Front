@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 
 import TopNavBar from '@components/TopNavBar';
-import { API_URL, getMovie, getDirector, isLiked, likeMovie, goodMovie, badMovie, isGood, isBad } from '@api';
+import { API_URL, getMovie, isLiked, likeMovie, goodMovie, badMovie, isGood, isBad } from '@api';
 import useAuth from '@hooks/useAuth';
 import Loading from '@components/Loading';
 import OptionPopup from '@components/cart/OptionPopup';
@@ -18,13 +18,6 @@ const MovieShowPage = ({ f7route, f7router }) => {
   const { data: liked, status: likeStatus, error: likeError } = useQuery(`like-${movieId}`, isLiked(movieId));
   const { data: movieIsGood, status: goodStatus, error: goodError } = useQuery(`good-${movieId}`, isGood(movieId));
   const { data: movieIsBad, status: badStatus, error: badError } = useQuery(`bad-${movieId}`, isBad(movieId));
-
-  const directorId = movie?.director_id;
-  const { data: director, status: directorStatus, error: directorError } = useQuery(
-    [`director-${directorId}`, directorId],
-    getDirector(directorId),
-    { enabled: !!directorId },
-  );
 
   const actors = movie?.played_actors;
   const options = movie?.options;
@@ -127,14 +120,10 @@ const MovieShowPage = ({ f7route, f7router }) => {
           <div className="movie-title">{movie?.title}</div>
           <div className="movie-year">{movie?.year}</div>
           <div className="movie-desc">{movie?.description}</div>
-          {directorStatus === 'loading' && <div>Loading...</div>}
-          {directorStatus === 'error' && <div>{directorError}</div>}
-          {director && (
-            <div className="movie-director">
-              <span>감독: </span>
-              <Link href={`/directors/${director?.id}`}>{director?.name}</Link>
-            </div>
-          )}
+          <div className="movie-director">
+            <span>감독: </span>
+            <Link href={`/directors/${movie?.director?.id}`}>{movie?.director?.name}</Link>
+          </div>
           <div className="movie-actor">
             <div>
               출연:&nbsp;
