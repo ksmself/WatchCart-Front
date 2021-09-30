@@ -1,7 +1,8 @@
 import { Page, Toolbar, Icon, Tabs, Tab, Link } from 'framework7-react';
 import React, { useCallback, useState } from 'react';
+import { useQuery } from 'react-query';
 
-import { logoutAPI } from '@api';
+import { getUser, logoutAPI } from '@api';
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
 import useAuth from '@hooks/useAuth';
@@ -12,6 +13,7 @@ import UserOrderList from '@components/user/UserOrderList';
 
 const MyPage = ({ f7router }) => {
   const { currentUser, isAuthenticated, unAuthenticateUser } = useAuth();
+  const { data: user, status, error } = useQuery(`user-${currentUser?.id}`, getUser(currentUser?.id));
 
   const logoutHandler = useCallback(async () => {
     try {
@@ -81,7 +83,9 @@ const MyPage = ({ f7router }) => {
           </div>
           {/* Tabs  */}
           <Tabs>
-            <Like />
+            <Tab id="tab-1" className="like-tab" tabActive>
+              <Like data={user?.liked_movies} status={status} error={error} />
+            </Tab>
             <Tab id="tab-2">
               <div className="flex justify-center mt-24">
                 <Link
