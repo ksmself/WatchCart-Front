@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { f7, List, ListInput, Page } from 'framework7-react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import * as Yup from 'yup';
 
 import { sleep } from '@utils';
 import TopNavBar from '@components/TopNavBar';
 import { cartItemsState, totalState } from '@pages/carts';
 import OrderItem from '@components/OrderItem';
-import { API_URL, createOrder, updateLineItem, updateOrder } from '@api';
+import { API_URL, createOrder, getUser, updateLineItem, updateOrder } from '@api';
 import { uncompletedOrderState } from '@pages/intro';
 import useAuth from '@hooks/useAuth';
 
@@ -30,10 +30,12 @@ const OrderSchema = Yup.object().shape({
 });
 
 const OrderIndexPage = ({ f7router }) => {
+  const { currentUser } = useAuth();
+  const { data: user, status, error } = useQuery(`user-${currentUser?.id}`, getUser(currentUser?.id));
   const initialValues: FormValues = {
     receiver_name: '',
     receiver_phone: '',
-    address1: '',
+    address1: user?.address1 || '',
   };
 
   const total = useRecoilValue(totalState);
@@ -48,7 +50,6 @@ const OrderIndexPage = ({ f7router }) => {
   // selectedTotal: select 합계
   const selectedTotal = selected.reduce((acc, cur) => acc + cur.option.price * cur.quantity, 0);
 
-  const { currentUser } = useAuth();
   const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
   useEffect(() => {
     const getUncompletedOrderId = async () => {
