@@ -28,6 +28,7 @@ const OptionPopup = ({ options, f7router }) => {
   const [showModal, setShowModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [quick, setQuick] = useState(false);
+  const [prevItems, setPrevItems] = useState([]);
 
   const { currentUser } = useAuth();
   const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
@@ -68,24 +69,9 @@ const OptionPopup = ({ options, f7router }) => {
     },
   });
 
-  const sendOrder = useMutation((params) => createLineItem(params), {
-    onError: (error) => {
-      console.log(error);
-    },
-    onSuccess: (data) => {
-      console.log(data);
-      setShowOrderModal(true);
-    },
-  });
-
   const sendToCart = useCallback(async () => {
     const newValue = await Promise.all(Object.entries(cart).map((v) => v[1]));
     await sendCart.mutateAsync(newValue);
-  }, [cart]);
-
-  const sendToOrder = useCallback(async () => {
-    // const newValue = await Promise.all(Object.entries(cart).map((v) => v[1]));
-    // await sendOrder.mutateAsync(newValue);
   }, [cart]);
 
   const onClickQuick = useCallback(() => {
@@ -103,8 +89,8 @@ const OptionPopup = ({ options, f7router }) => {
   }, [selected]);
 
   useEffect(() => {
-    console.log('cartItems: ', cartItems);
-  }, [cartItems]);
+    setPrevItems(cartItems);
+  }, []);
 
   return (
     <Popup className="demo-popup-swipe" swipeToClose>
@@ -306,18 +292,40 @@ const OptionPopup = ({ options, f7router }) => {
                         }}
                       />
                     </div>
-                    <div className="mb-6 text-sm">바로 구매하러 가시겠습니까?</div>
-                    <Link
-                      className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
-                      onClick={() => {
-                        setShowOrderModal(false);
-                        f7router.navigate('/orders');
-                        setCart({});
-                      }}
-                      popupClose
-                    >
-                      바로 구매하기
-                    </Link>
+
+                    {prevItems.length > 0 ? (
+                      <>
+                        <div className="mt-3 mb-6 px-1 text-sm text-white">
+                          장바구니에 담긴 상품이 있습니다. 장바구니로 이동하시겠습니까?
+                        </div>
+                        <Link
+                          className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
+                          onClick={() => {
+                            setShowOrderModal(false);
+                            f7router.navigate('/carts');
+                            setCart({});
+                          }}
+                          popupClose
+                        >
+                          장바구니 바로가기
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <div className="mb-6 text-sm">바로 구매하러 가시겠습니까?</div>
+                        <Link
+                          className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
+                          onClick={() => {
+                            setShowOrderModal(false);
+                            f7router.navigate('/orders');
+                            setCart({});
+                          }}
+                          popupClose
+                        >
+                          바로 구매하기
+                        </Link>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
