@@ -74,6 +74,10 @@ const OrderShowPage = ({ f7route }) => {
                 );
               }
             })}
+          <div className="flex justify-between items-center mt-6">
+            <div className="mr-3 text-sm font-bold text-white">총 주문금액) </div>
+            <div className="text-indigo-500 text-xl font-bold">₩{data?.data.total}</div>
+          </div>
         </div>
       </div>
     </Page>
