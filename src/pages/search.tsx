@@ -19,10 +19,6 @@ const Search = () => {
   const debouncedSearchKeyword = useQueryDebounce(keyword, 200);
   const { data, status, error } = useQuery(debouncedSearchKeyword, getMoviesByKeyword(debouncedSearchKeyword));
 
-  useEffect(() => {
-    if (status !== 'loading') console.log(data);
-  }, [data]);
-
   return (
     <Page className="theme-dark">
       <TopNavBar backLink={true} />

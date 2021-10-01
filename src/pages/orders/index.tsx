@@ -68,7 +68,6 @@ const OrderIndexPage = ({ f7router }) => {
     },
     onSuccess: (data) => {
       // line_item의 status가 complete 될 때
-      console.log(data.data);
       // data.data.order_id를 넘겨줘야 함
       setUncompletedOrderId(null);
       f7router.navigate(`/orders/complete/${data?.data?.order_id}`);

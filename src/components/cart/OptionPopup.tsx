@@ -61,7 +61,6 @@ const OptionPopup = ({ options, f7router }) => {
       console.log(error);
     },
     onSuccess: (data) => {
-      console.log(data);
       if (!quick) setShowModal(true);
       if (quick) {
         setShowOrderModal(true);

@@ -14,10 +14,6 @@ const OrderShowPage = ({ f7route }) => {
 
   const { data, status, error } = useQuery(`order-${orderId}`, getOrder(orderId));
 
-  useEffect(() => {
-    if (status !== 'loading') console.log(data?.data);
-  }, [data]);
-
   return (
     <Page className="theme-dark">
       <TopNavBar backLink optionName="Order" />

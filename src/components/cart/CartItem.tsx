@@ -15,7 +15,6 @@ const CartItem = ({ item }) => {
     },
     onSuccess: async (data) => {
       // 성공적으로 수정함
-      console.log('수정 결과', data?.data);
       const sliced = cartItems.slice();
       try {
         const newValue = await Promise.all(
@@ -83,7 +82,6 @@ const CartItem = ({ item }) => {
     },
     onSuccess: async (data) => {
       // 성공적으로 삭제함
-      console.log('삭제 결과', data?.data);
       const sliced = cartItems.slice();
       try {
         const newValue = await Promise.all(sliced.filter((v) => v.id !== data?.data.id));
@@ -96,15 +94,10 @@ const CartItem = ({ item }) => {
 
   const onClickDelete = useCallback(async () => {
     try {
-      const data = await deleteCart.mutateAsync(item.id);
-      console.log(data);
+      await deleteCart.mutateAsync(item.id);
     } catch (err) {
       console.log(err);
     }
-  }, [cartItems]);
-
-  useEffect(() => {
-    console.log('cartItems: ', cartItems);
   }, [cartItems]);
 
   const handleClick = useCallback(() => {

@@ -45,7 +45,6 @@ const UserInfoEdit = () => {
       console.log(error);
     },
     onSuccess: async (data) => {
-      console.log(data?.data);
       f7.dialog.alert(data?.data?.error || '비밀번호가 성공적으로 변경됐습니다.');
     },
   });

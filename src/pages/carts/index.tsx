@@ -56,10 +56,6 @@ const CartIndexPage = ({ f7router }) => {
     setSelectTotal(newTotal);
   }, [cartItems]);
 
-  useEffect(() => {
-    console.log('selected', selectTotal);
-  }, [selectTotal]);
-
   return (
     <Page className="theme-dark">
       <TopNavBar backLink />
