@@ -12,6 +12,7 @@ interface FormValues {
   email: string;
   password: string;
   password_confirmation: string;
+  address1: string;
 }
 
 const SignUpSchema = Yup.object().shape({
@@ -32,6 +33,7 @@ const SignUpPage = ({ f7router }) => {
     email: '',
     password: '',
     password_confirmation: '',
+    address1: null,
   };
 
   useEffect(() => {
@@ -111,6 +113,18 @@ const SignUpPage = ({ f7router }) => {
                 value={values.password_confirmation}
                 errorMessageForce
                 errorMessage={touched.password_confirmation && errors.password_confirmation}
+              />
+              <ListInput
+                label={i18next.t('주소 (선택)')}
+                type="text"
+                name="address1"
+                placeholder="주소를 입력해주세요"
+                clearButton
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.address1}
+                errorMessageForce
+                errorMessage={touched.address1 && errors.address1}
               />
             </List>
 
