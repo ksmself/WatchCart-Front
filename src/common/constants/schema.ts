@@ -16,17 +16,23 @@ export interface User extends DefaultProps, Address {
   description?: string;
 }
 
-export interface Category extends DefaultProps {
-  title: string;
-  body: string;
-  image_path: string;
-}
+// export interface Category extends DefaultProps {
+//   title: string;
+//   body: string;
+//   image_path: string;
+// }
 
 export interface Image extends DefaultProps {
   imagable_type: string;
   imagable_id: number;
   image_path: string;
 }
+
+export type Category = {
+  id: number;
+  title: string;
+  movies: Movie[];
+};
 
 export type Movie = {
   id: number;

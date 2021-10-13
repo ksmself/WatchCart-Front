@@ -8,6 +8,7 @@ import { getCategory } from '@api';
 import ColSwiper from '@components/Swiper/ColSwiper';
 import Loading from '@components/Loading';
 import SortSelect from '@components/SortSelect';
+import { Category } from '@constants';
 
 const CategoryShowPage = ({ f7route }) => {
   const categoryId = f7route.params.id;
@@ -35,11 +36,14 @@ const CategoryShowPage = ({ f7route }) => {
     }
   }, [selected]);
 
-  const { data: category, status, error } = useQuery(`categories-${categoryId}-${url}`, getCategory(categoryId, url));
+  const { data: category, status, error } = useQuery<Category>(
+    `categories-${categoryId}-${url}`,
+    getCategory(categoryId, url),
+  );
 
   return (
     <Page className="theme-dark grid-demo">
-      <TopNavBar backLink={true} />
+      <TopNavBar backLink />
       {status === 'loading' && (
         <div className="m-32">
           <Loading />

@@ -6,9 +6,10 @@ import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import { getCategories } from '@api';
 import Loading from '@components/Loading';
+import { Category } from '@constants';
 
 const CategoryIndexPage = () => {
-  const { data: categories, status, error } = useQuery('categoriesTitle', getCategories());
+  const { data: categories, status, error } = useQuery<Category[]>('categoriesTitle', getCategories());
 
   return (
     <Page className="theme-dark">
