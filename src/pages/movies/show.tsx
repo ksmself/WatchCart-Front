@@ -7,6 +7,7 @@ import { API_URL, getMovie, isLiked, likeMovie, goodMovie, badMovie, isGood, isB
 import useAuth from '@hooks/useAuth';
 import Loading from '@components/Loading';
 import OptionPopup from '@components/cart/OptionPopup';
+import { Movie } from '@constants';
 
 const MovieShowPage = ({ f7route, f7router }) => {
   const movieId = f7route.params.id;
@@ -14,10 +15,19 @@ const MovieShowPage = ({ f7route, f7router }) => {
   const queryClient = useQueryClient();
   const [rateOpen, setRateOpen] = useState(false);
 
-  const { data: movie, status: movieStatus, error: movieError } = useQuery(`movie-${movieId}`, getMovie(movieId));
-  const { data: liked, status: likeStatus, error: likeError } = useQuery(`like-${movieId}`, isLiked(movieId));
-  const { data: movieIsGood, status: goodStatus, error: goodError } = useQuery(`good-${movieId}`, isGood(movieId));
-  const { data: movieIsBad, status: badStatus, error: badError } = useQuery(`bad-${movieId}`, isBad(movieId));
+  const { data: movie, status: movieStatus, error: movieError } = useQuery<Movie>(
+    `movie-${movieId}`,
+    getMovie(movieId),
+  );
+  const { data: liked, status: likeStatus, error: likeError } = useQuery(`like-${movieId}`, isLiked(movieId), {
+    enabled: isAuthenticated,
+  });
+  const { data: movieIsGood, status: goodStatus, error: goodError } = useQuery(`good-${movieId}`, isGood(movieId), {
+    enabled: isAuthenticated,
+  });
+  const { data: movieIsBad, status: badStatus, error: badError } = useQuery(`bad-${movieId}`, isBad(movieId), {
+    enabled: isAuthenticated,
+  });
 
   const actors = movie?.played_actors;
   const options = movie?.options;
@@ -99,7 +109,7 @@ const MovieShowPage = ({ f7route, f7router }) => {
 
   return (
     <Page className="theme-dark">
-      <TopNavBar backLink backLinkForce={true} />
+      <TopNavBar backLink backLinkForce />
       {movieStatus === 'loading' && (
         <div className="m-32">
           <Loading />
