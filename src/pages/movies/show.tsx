@@ -1,5 +1,5 @@
 import { Page, Icon, Link, f7, Button } from 'framework7-react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 
 import TopNavBar from '@components/TopNavBar';
@@ -14,6 +14,7 @@ const MovieShowPage = ({ f7route, f7router }) => {
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const [rateOpen, setRateOpen] = useState(false);
+  const [rateIcon, setRateIcon] = useState('star');
 
   const { data: movie, status: movieStatus, error: movieError } = useQuery<Movie>(
     `movie-${movieId}`,
@@ -49,6 +50,8 @@ const MovieShowPage = ({ f7route, f7router }) => {
       queryClient.setQueryData(`good-${movieId}`, data.data);
       // delay 주고 close
       setRateOpen(false);
+      if (data.data) setRateIcon('hand_thumbsup_fill');
+      else setRateIcon('star');
     },
   });
 
@@ -60,6 +63,8 @@ const MovieShowPage = ({ f7route, f7router }) => {
       queryClient.setQueryData(`bad-${movieId}`, data.data);
       // delay 주고 close
       setRateOpen(false);
+      if (data.data) setRateIcon('hand_thumbsdown_fill');
+      else setRateIcon('star');
     },
   });
 
@@ -106,6 +111,12 @@ const MovieShowPage = ({ f7route, f7router }) => {
   const thumbsDown = useCallback(() => {
     bad.mutate(movieId);
   }, []);
+
+  useEffect(() => {
+    if (movieIsGood) setRateIcon('hand_thumbsup_fill');
+    if (movieIsBad) setRateIcon('hand_thumbsdown_fill');
+    if (!movieIsGood && !movieIsBad) setRateIcon('star');
+  }, [movieIsGood, movieIsBad]);
 
   return (
     <Page className="theme-dark">
@@ -166,7 +177,7 @@ const MovieShowPage = ({ f7route, f7router }) => {
             <div className="flex flex-col items-center">
               <Link
                 style={{ color: movieIsGood || movieIsBad ? '#f82f62' : '#fff' }}
-                iconF7={movieIsGood ? 'hand_thumbsup_fill' : movieIsBad ? 'hand_thumbsdown_fill' : 'star'}
+                iconF7={rateIcon}
                 className="star mb-4"
                 onClick={() => onClickRate()}
               />
