@@ -7,11 +7,12 @@ import { useQuery } from 'react-query';
 import { getUser } from '@api';
 import useAuth from '@hooks/useAuth';
 import Like from '@components/tab/Like';
+import { User } from '@constants';
 
 const StarPage = () => {
   const { currentUser } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { data: user, status, error } = useQuery(`user-${currentUser?.id}`, getUser(currentUser?.id));
+  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id));
 
   return (
     <Page className="theme-dark">

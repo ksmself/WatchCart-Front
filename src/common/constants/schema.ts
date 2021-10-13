@@ -7,20 +7,16 @@ interface DefaultProps {
   updated_at: string;
 }
 
-export interface User extends DefaultProps, Address {
-  email: string;
+export type User = {
+  id: number;
   name: string;
-  phone: string;
-  image_path: string;
-  status?: string;
-  description?: string;
-}
-
-// export interface Category extends DefaultProps {
-//   title: string;
-//   body: string;
-//   image_path: string;
-// }
+  email: string;
+  address1: string;
+  liked_movies: Movie[];
+  good_movies: Movie[];
+  bad_movies: Movie[];
+  orders: Order[];
+};
 
 export interface Image extends DefaultProps {
   imagable_type: string;
@@ -68,6 +64,28 @@ export type Actor = {
   id: number;
   name: string;
   movies?: Movie[];
+};
+
+export type LineItem = {
+  id: number;
+  option_id: number;
+  order_id: number;
+  quantity: number;
+  status: string;
+  option: Option;
+};
+
+export type Order = {
+  id: number;
+  user_id: number;
+  receiver_name: string;
+  receiver_phone: string;
+  address1: string;
+  total: number;
+  created_at: string;
+  updated_at: string;
+  status: string;
+  line_items: LineItem[];
 };
 
 export interface Item extends DefaultProps {

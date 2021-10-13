@@ -10,10 +10,11 @@ import LoginForm from '@pages/users/sessions/new';
 import UserInfoEdit from '@components/user/UserInfoEdit';
 import Like from '@components/tab/Like';
 import UserOrderList from '@components/user/UserOrderList';
+import { User } from '@constants';
 
 const MyPage = ({ f7router }) => {
   const { currentUser, isAuthenticated, unAuthenticateUser } = useAuth();
-  const { data: user, status, error } = useQuery(`user-${currentUser?.id}`, getUser(currentUser?.id));
+  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id));
 
   const logoutHandler = useCallback(async () => {
     try {

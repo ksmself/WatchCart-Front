@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { f7, Navbar, NavLeft, Link, NavTitle, NavRight, Icon, Badge } from 'framework7-react';
 
-const TopNavBar = ({ f7router, backLink, optionName, cartCount, currentUser, centerTitle }) => {
+const TopNavBar = ({ f7router, backLink, backLinkForce, optionName, cartCount, currentUser }) => {
   const onClickCart = useCallback(() => {
     if (!currentUser) {
       f7.dialog.confirm('로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?', 'WatchCart', () =>
@@ -34,7 +34,7 @@ const TopNavBar = ({ f7router, backLink, optionName, cartCount, currentUser, cen
           </NavRight>
         </>
       )}
-      {backLink && <NavLeft backLink="Back" className="back" backLinkForce />}
+      {backLink && <NavLeft backLink="Back" className="back" backLinkForce={backLinkForce} />}
       {optionName && <NavTitle className="title">{optionName}</NavTitle>}
     </Navbar>
   );

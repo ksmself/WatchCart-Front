@@ -5,12 +5,13 @@ import dayjs from 'dayjs';
 import useAuth from '@hooks/useAuth';
 import { API_URL, getUser } from '@api';
 import Loading from '@components/Loading';
+import { User } from '@constants';
 
 dayjs.locale('ko');
 
 const UserOrderList = () => {
   const { currentUser } = useAuth();
-  const { data: userInfo, status, error } = useQuery(`userInfo-${currentUser.id}`, getUser(currentUser.id));
+  const { data: userInfo, status, error } = useQuery<User>(`userInfo-${currentUser.id}`, getUser(currentUser.id));
 
   const [onlyOrder, setOnlyOrder] = useState(null);
   useEffect(() => {

@@ -12,6 +12,7 @@ import OrderItem from '@components/OrderItem';
 import { API_URL, createOrder, getUser, updateLineItem, updateOrder } from '@api';
 import { uncompletedOrderState } from '@pages/intro';
 import useAuth from '@hooks/useAuth';
+import { User } from '@constants';
 
 interface FormValues {
   receiver_name: string;
@@ -31,7 +32,7 @@ const OrderSchema = Yup.object().shape({
 
 const OrderIndexPage = ({ f7router }) => {
   const { currentUser } = useAuth();
-  const { data: user, status, error } = useQuery(`user-${currentUser?.id}`, getUser(currentUser?.id));
+  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id));
   const initialValues: FormValues = {
     receiver_name: '',
     receiver_phone: '',

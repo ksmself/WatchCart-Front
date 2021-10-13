@@ -7,6 +7,7 @@ import useQueryDebounce from '@hooks/useQueryDebounce';
 import { getMoviesByKeyword } from '@api';
 import Loading from '@components/Loading';
 import ColSwiper from '@components/Swiper/ColSwiper';
+import { Movie } from '@constants';
 
 const Search = () => {
   const [open, setOpen] = useState(true);
@@ -17,11 +18,11 @@ const Search = () => {
   }, []);
 
   const debouncedSearchKeyword = useQueryDebounce(keyword, 200);
-  const { data, status, error } = useQuery(debouncedSearchKeyword, getMoviesByKeyword(debouncedSearchKeyword));
+  const { data, status, error } = useQuery<Movie[]>(debouncedSearchKeyword, getMoviesByKeyword(debouncedSearchKeyword));
 
   return (
     <Page className="theme-dark">
-      <TopNavBar backLink={true} />
+      <TopNavBar backLink />
       {open && (
         <div className="flex flex-col items-end mb-3 px-2.5 bg-black">
           <div className="w-full pt-4 mb-1.5">

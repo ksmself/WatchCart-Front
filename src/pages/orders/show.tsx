@@ -6,13 +6,14 @@ import dayjs from 'dayjs';
 import TopNavBar from '@components/TopNavBar';
 import { API_URL, getOrder } from '@api';
 import Loading from '@components/Loading';
+import { Order } from '@constants';
 
 dayjs.locale('ko');
 
 const OrderShowPage = ({ f7route }) => {
   const orderId = f7route.params.id;
 
-  const { data, status, error } = useQuery(`order-${orderId}`, getOrder(orderId));
+  const { data, status, error } = useQuery<Order>(`order-${orderId}`, getOrder(orderId));
 
   return (
     <Page className="theme-dark">
