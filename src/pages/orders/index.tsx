@@ -7,12 +7,12 @@ import * as Yup from 'yup';
 
 import { sleep } from '@utils';
 import TopNavBar from '@components/TopNavBar';
-import { cartItemsState, totalState } from '@pages/carts';
 import OrderItem from '@components/OrderItem';
 import { API_URL, createOrder, getUser, updateLineItem, updateOrder } from '@api';
-import { uncompletedOrderState } from '@pages/intro';
 import useAuth from '@hooks/useAuth';
 import { User } from '@constants';
+import { cartItemsState, totalState } from '@atoms/cart';
+import { uncompletedOrderState } from '@atoms/order';
 
 interface FormValues {
   receiver_name: string;

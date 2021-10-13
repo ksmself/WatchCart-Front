@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Stepper } from 'framework7-react';
 import { useRecoilState } from 'recoil';
-import { cartItemsState } from '@pages/carts';
 import { useMutation } from 'react-query';
 import { API_URL, deleteLineItem, updateLineItem } from '@api';
+import { cartItemsState } from '@atoms/cart';
 
 const CartItem = ({ item }) => {
   const [cartItems, setCartItems] = useRecoilState(cartItemsState);

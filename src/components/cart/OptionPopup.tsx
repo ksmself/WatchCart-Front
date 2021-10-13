@@ -6,9 +6,9 @@ import { Popup, Page, Navbar, NavRight, Link, Stepper } from 'framework7-react';
 import { useRecoilState } from 'recoil';
 
 import { createLineItem, API_URL } from '@api';
-import { cartItemsState } from '@pages/carts';
 import useAuth from '@hooks/useAuth';
-import { uncompletedOrderState } from '@pages/intro';
+import { uncompletedOrderState } from '@atoms/order';
+import { cartItemsState } from '@atoms/cart';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');

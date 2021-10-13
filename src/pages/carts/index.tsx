@@ -1,26 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { f7, Page } from 'framework7-react';
-import { atom, selector, useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import TopNavBar from '@components/TopNavBar';
 import { API_URL } from '@api';
-import { uncompletedOrderState } from '@pages/intro';
 import CartItem from '@components/cart/CartItem';
 import useAuth from '@hooks/useAuth';
-
-export const cartItemsState = atom({
-  key: 'cartItemsState',
-  default: [],
-});
-
-export const totalState = selector({
-  key: 'totalsState',
-  get: ({ get }) => {
-    const cart = get(cartItemsState);
-    const subTotal = cart.reduce((acc, cur) => acc + cur.option.price * cur.quantity, 0);
-    return subTotal;
-  },
-});
+import { cartItemsState } from '@atoms/cart';
+import { uncompletedOrderState } from '@atoms/order';
 
 const CartIndexPage = ({ f7router }) => {
   const { currentUser } = useAuth();

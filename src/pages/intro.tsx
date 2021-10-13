@@ -8,15 +8,11 @@ import BottomToolBarContent from '@components/BottomToolBarContent';
 import { API_URL } from '@api';
 import RowSwiper from '@components/Swiper/RowSwiper';
 import useAuth from '@hooks/useAuth';
-import { cartItemsState } from '@pages/carts';
 import { API } from '@api/api.config';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import Loading from '@components/Loading';
-
-export const uncompletedOrderState = atom({
-  key: 'orderState',
-  default: [],
-});
+import { uncompletedOrderState } from '@atoms/order';
+import { cartItemsState } from '@atoms/cart';
 
 const IntroPage = ({ f7router }) => {
   const { currentUser } = useAuth();
