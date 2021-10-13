@@ -28,16 +28,41 @@ export interface Image extends DefaultProps {
   image_path: string;
 }
 
-export interface Movie extends DefaultProps {
+export type Movie = {
+  id: number;
   title: string;
-  description: string;
-  stars: number;
-  year: number;
+  description?: string;
+  stars?: number;
+  year?: number;
   category_id: number;
   director_id: number;
   image_path: string;
   category?: Category;
-}
+  options?: Option[];
+  director?: Director;
+  played_actors?: Actor[];
+};
+
+export type Option = {
+  id: number;
+  movie_id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  movie: Movie;
+};
+
+export type Director = {
+  id: number;
+  name: string;
+  movies?: Movie[];
+};
+
+export type Actor = {
+  id: number;
+  name: string;
+  movies?: Movie[];
+};
 
 export interface Item extends DefaultProps {
   user_id: number;

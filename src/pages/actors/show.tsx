@@ -8,6 +8,7 @@ import ColSwiper from '@components/Swiper/ColSwiper';
 import Loading from '@components/Loading';
 import { Listbox } from '@headlessui/react';
 import SortSelect from '@components/SortSelect';
+import { Actor } from '@constants';
 
 const ActorShowPage = ({ f7route }) => {
   const actorId = f7route.params.id;
@@ -35,11 +36,11 @@ const ActorShowPage = ({ f7route }) => {
     }
   }, [selected]);
 
-  const { data: actor, status, error } = useQuery(`actor-${actorId}-${url}`, getActor(actorId, url));
+  const { data: actor, status, error } = useQuery<Actor>(`actor-${actorId}-${url}`, getActor(actorId, url));
 
   return (
     <Page className="theme-dark">
-      <TopNavBar backLink={true} />
+      <TopNavBar backLink />
       {status === 'loading' && (
         <div className="m-32">
           <Loading />

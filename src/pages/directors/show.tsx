@@ -8,6 +8,7 @@ import ColSwiper from '@components/Swiper/ColSwiper';
 import Loading from '@components/Loading';
 import { Listbox } from '@headlessui/react';
 import SortSelect from '@components/SortSelect';
+import { Director } from '@constants';
 
 const DirectorShowPage = ({ f7route }) => {
   const directorId = f7route.params.id;
@@ -35,11 +36,14 @@ const DirectorShowPage = ({ f7route }) => {
     }
   }, [selected]);
 
-  const { data: director, status, error } = useQuery(`director-${directorId}-${url}`, getDirector(directorId, url));
+  const { data: director, status, error } = useQuery<Director>(
+    `director-${directorId}-${url}`,
+    getDirector(directorId, url),
+  );
 
   return (
     <Page className="theme-dark grid-demo">
-      <TopNavBar backLink={true} />
+      <TopNavBar backLink />
       {status === 'loading' && (
         <div className="m-32">
           <Loading />
