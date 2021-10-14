@@ -130,7 +130,7 @@ const CartItem = ({ item }) => {
         <div className="flex flex-row justify-between items-center">
           <div className="flex flex-row">
             <label className="item-checkbox item-content">
-              <input type="checkbox" name="demo-checkbox" checked={check} onClick={() => handleClick()} />
+              <input type="checkbox" name="demo-checkbox" onChange={() => handleClick()} checked={check} />
               <i className="icon icon-checkbox" />
             </label>
             <a href={`/movies/${item.option.movie.id}`}>
