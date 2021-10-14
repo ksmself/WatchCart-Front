@@ -43,10 +43,10 @@ const StarPage = () => {
       {/* Tabs */}
       <Tabs>
         <Tab id="tab-1" tabActive>
-          <Like data={user?.good_movies} status={status} error={error} />
+          <Like data={user?.rated_good} status={status} error={error} />
         </Tab>
         <Tab id="tab-2">
-          <Like data={user?.bad_movies} status={status} error={error} />
+          <Like data={user?.rated_bad} status={status} error={error} />
         </Tab>
       </Tabs>
       <Toolbar tabbar labels position="bottom">

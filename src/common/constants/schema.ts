@@ -13,8 +13,8 @@ export type User = {
   email: string;
   address1: string;
   liked_movies: Movie[];
-  good_movies: Movie[];
-  bad_movies: Movie[];
+  rated_good: Movie[];
+  rated_bad: Movie[];
   orders: Order[];
 };
 
