@@ -118,6 +118,14 @@ const MovieShowPage = ({ f7route, f7router }) => {
     if (!movieIsGood && !movieIsBad) setRateIcon('star');
   }, [movieIsGood, movieIsBad]);
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      queryClient.setQueryData(`like-${movieId}`, false);
+      queryClient.setQueryData(`good-${movieId}`, false);
+      queryClient.setQueryData(`bad-${movieId}`, false);
+    }
+  }, [isAuthenticated]);
+
   return (
     <Page className="theme-dark">
       <TopNavBar backLink backLinkForce />
