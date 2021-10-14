@@ -1,7 +1,7 @@
 import { Page, Toolbar, BlockTitle, Block } from 'framework7-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useInfiniteQuery } from 'react-query';
-import { atom, useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
@@ -13,11 +13,12 @@ import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import Loading from '@components/Loading';
 import { uncompletedOrderState } from '@atoms/order';
 import { cartItemsState } from '@atoms/cart';
+import { LineItem } from '@constants';
 
 const IntroPage = ({ f7router }) => {
   const { currentUser } = useAuth();
 
-  const [fetchRange, setFetchRange] = useState(4);
+  const fetchRange = 4;
 
   const fetchCategory = async ({ pageParam = 1 }) => {
     const data = await API.get(`/categories/page/${pageParam}`);
@@ -51,8 +52,8 @@ const IntroPage = ({ f7router }) => {
     enabled: hasNextPage,
   });
 
-  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
-  const [cartItems, setCartItems] = useRecoilState(cartItemsState);
+  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState<number>(uncompletedOrderState);
+  const [cartItems, setCartItems] = useRecoilState<LineItem[]>(cartItemsState);
 
   useEffect(() => {
     const getUncompletedOrderId = async () => {

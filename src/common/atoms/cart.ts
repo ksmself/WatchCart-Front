@@ -1,11 +1,12 @@
+import { LineItem } from '@constants';
 import { atom, selector } from 'recoil';
 
-export const cartItemsState = atom({
+export const cartItemsState = atom<LineItem[]>({
   key: 'cartItemsState',
   default: [],
 });
 
-export const totalState = selector({
+export const totalState = selector<number>({
   key: 'totalsState',
   get: ({ get }) => {
     const cart = get(cartItemsState);

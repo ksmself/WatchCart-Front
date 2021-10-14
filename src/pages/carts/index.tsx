@@ -8,11 +8,12 @@ import CartItem from '@components/cart/CartItem';
 import useAuth from '@hooks/useAuth';
 import { cartItemsState } from '@atoms/cart';
 import { uncompletedOrderState } from '@atoms/order';
+import { LineItem } from '@constants';
 
 const CartIndexPage = ({ f7router }) => {
   const { currentUser } = useAuth();
-  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
-  const [cartItems, setCartItems] = useRecoilState(cartItemsState);
+  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState<number>(uncompletedOrderState);
+  const [cartItems, setCartItems] = useRecoilState<LineItem[]>(cartItemsState);
   const [selectTotal, setSelectTotal] = useState(0);
 
   useEffect(() => {

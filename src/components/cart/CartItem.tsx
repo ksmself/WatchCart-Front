@@ -4,9 +4,10 @@ import { useRecoilState } from 'recoil';
 import { useMutation } from 'react-query';
 import { API_URL, deleteLineItem, updateLineItem } from '@api';
 import { cartItemsState } from '@atoms/cart';
+import { LineItem } from '@constants';
 
 const CartItem = ({ item }) => {
-  const [cartItems, setCartItems] = useRecoilState(cartItemsState);
+  const [cartItems, setCartItems] = useRecoilState<LineItem[]>(cartItemsState);
   const [check, setCheck] = useState(true);
 
   const updateCart = useMutation((params) => updateLineItem(params), {

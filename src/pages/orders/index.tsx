@@ -10,7 +10,7 @@ import TopNavBar from '@components/TopNavBar';
 import OrderItem from '@components/OrderItem';
 import { API_URL, createOrder, getUser, updateLineItem, updateOrder } from '@api';
 import useAuth from '@hooks/useAuth';
-import { User } from '@constants';
+import { LineItem, User } from '@constants';
 import { cartItemsState, totalState } from '@atoms/cart';
 import { uncompletedOrderState } from '@atoms/order';
 import Loading from '@components/Loading';
@@ -42,8 +42,8 @@ const OrderIndexPage = ({ f7router }) => {
     address1: user?.address1 || '',
   };
 
-  const total = useRecoilValue(totalState);
-  const cartItems = useRecoilValue(cartItemsState);
+  const total = useRecoilValue<number>(totalState);
+  const cartItems = useRecoilValue<LineItem[]>(cartItemsState);
 
   // selected는 check된 아이템
   const selected = cartItems.filter((v) => v.check === undefined || v.check === true);
@@ -54,7 +54,7 @@ const OrderIndexPage = ({ f7router }) => {
   // selectedTotal: select 합계
   const selectedTotal = selected.reduce((acc, cur) => acc + cur.option.price * cur.quantity, 0);
 
-  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
+  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState<number>(uncompletedOrderState);
   useEffect(() => {
     const getUncompletedOrderId = async () => {
       const url = `${API_URL}/orders?q[user_id_eq]=${currentUser?.id}&q[status_eq]=orderUncompleted`;
@@ -67,8 +67,8 @@ const OrderIndexPage = ({ f7router }) => {
   }, [currentUser]);
 
   const updateCart = useMutation((params) => updateLineItem(params), {
-    onError: (error) => {
-      console.log(error);
+    onError: (err) => {
+      console.log(err);
     },
     onSuccess: (data) => {
       // line_item의 status가 complete 될 때
@@ -79,8 +79,8 @@ const OrderIndexPage = ({ f7router }) => {
   });
 
   const makeOrder = useMutation((params) => updateOrder(params), {
-    onError: (error) => {
-      console.log(error);
+    onError: (err) => {
+      console.log(err);
     },
     onSuccess: (data) => {
       if (allChecked) {
@@ -112,8 +112,8 @@ const OrderIndexPage = ({ f7router }) => {
   const [values, setValues] = useState(null);
   // 새로운 order가 completedOrder가 되고자 할 때 사용
   const updateSelected = useMutation((params) => updateLineItem(params), {
-    onError: (error) => {
-      console.log(error);
+    onError: (err) => {
+      console.log(err);
     },
     onSuccess: (data) => {
       if (newOrderId !== null) {
@@ -133,8 +133,8 @@ const OrderIndexPage = ({ f7router }) => {
 
   // 새로운 order 생성
   const createNewOrder = useMutation((params) => createOrder(params), {
-    onError: (error) => {
-      console.log(error);
+    onError: (err) => {
+      console.log(err);
     },
     onSuccess: (data) => {
       setNewOrderId(data?.data?.id);

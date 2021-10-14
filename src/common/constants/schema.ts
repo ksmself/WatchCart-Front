@@ -73,6 +73,7 @@ export type LineItem = {
   quantity: number;
   status: string;
   option: Option;
+  check?: boolean;
 };
 
 export type Order = {

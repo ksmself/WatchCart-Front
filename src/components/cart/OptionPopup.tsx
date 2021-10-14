@@ -9,6 +9,7 @@ import { createLineItem, API_URL } from '@api';
 import useAuth from '@hooks/useAuth';
 import { uncompletedOrderState } from '@atoms/order';
 import { cartItemsState } from '@atoms/cart';
+import { LineItem } from '@constants';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -31,8 +32,8 @@ const OptionPopup = ({ options, f7router }) => {
   const [prevItems, setPrevItems] = useState([]);
 
   const { currentUser } = useAuth();
-  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState(uncompletedOrderState);
-  const [cartItems, setCartItems] = useRecoilState(cartItemsState);
+  const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState<number>(uncompletedOrderState);
+  const [cartItems, setCartItems] = useRecoilState<LineItem[]>(cartItemsState);
 
   useEffect(() => {
     const getUncompletedOrderId = async () => {
