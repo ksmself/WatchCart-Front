@@ -11,9 +11,10 @@ import OrderItem from '@components/OrderItem';
 import { API_URL, createOrder, getUser, updateLineItem, updateOrder } from '@api';
 import useAuth from '@hooks/useAuth';
 import { LineItem, User } from '@constants';
-import { cartItemsState, totalState } from '@atoms/cart';
+import { cartItemsState } from '@atoms/cart';
 import { uncompletedOrderState } from '@atoms/order';
 import Loading from '@components/Loading';
+import { totalState } from '@selectors/cart';
 
 interface FormValues {
   receiver_name: string;

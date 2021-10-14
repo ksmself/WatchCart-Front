@@ -21,7 +21,7 @@
       "@components/*": ["src/components/*"],
       "@styles/*": ["src/assets/styles/*"],
       "@hooks/*": ["src/common/hooks/*"],
-      "@atoms": ["src/common/atoms/index"],
+      "@atoms/*": ["src/common/atoms/*"],
       "@api": ["src/common/api/index"],
       "@config": ["src/common/config/index"],
       "@routes": ["src/common/routes/index"],
@@ -29,7 +29,7 @@
       "@js/*": ["src/js/*"],
       "@constants": ["src/common/constants/index"],
       "@store": ["src/common/store/index"],
-      "@selectors": ["src/common/selectors/index"]
+      "@selectors/*": ["src/common/selectors/*"]
     }
   },
   "include": ["src/**/*"],
