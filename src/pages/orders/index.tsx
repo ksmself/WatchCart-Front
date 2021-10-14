@@ -13,6 +13,7 @@ import useAuth from '@hooks/useAuth';
 import { User } from '@constants';
 import { cartItemsState, totalState } from '@atoms/cart';
 import { uncompletedOrderState } from '@atoms/order';
+import Loading from '@components/Loading';
 
 interface FormValues {
   receiver_name: string;
@@ -154,6 +155,12 @@ const OrderIndexPage = ({ f7router }) => {
       {/* 입력 폼 */}
       <Page className="theme-dark">
         <TopNavBar backLink backLinkForce optionName="주문 페이지" />
+        {status === 'loading' && (
+          <div className="m-32">
+            <Loading />
+          </div>
+        )}
+        {status === 'error' && <div>{error}</div>}
         <Formik
           initialValues={initialValues}
           validationSchema={OrderSchema}

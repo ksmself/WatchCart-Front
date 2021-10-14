@@ -136,6 +136,8 @@ const MovieShowPage = ({ f7route, f7router }) => {
       )}
       {movieStatus === 'error' && <div className="flex justify-center">{movieError}</div>}
       {likeStatus === 'error' && <div className="flex justify-center">{likeError}</div>}
+      {goodStatus === 'error' && <div className="flex justify-center">{goodError}</div>}
+      {badStatus === 'error' && <div className="flex justify-center">{badError}</div>}
       {movie && (
         <div className="movie-container">
           <img src={`${API_URL}${movie?.image_path}`} alt={movie?.title} />
@@ -165,6 +167,7 @@ const MovieShowPage = ({ f7route, f7router }) => {
           </div>
           <div className="movie-btn relative">
             <div className="flex flex-col items-center">
+              {likeStatus === 'loading' && <Loading />}
               <Link
                 className="mb-4"
                 style={{ color: liked ? '#f82f62' : '#fff' }}
@@ -183,6 +186,7 @@ const MovieShowPage = ({ f7route, f7router }) => {
               <span>구매하기</span>
             </div>
             <div className="flex flex-col items-center">
+              {(goodStatus === 'loading' || badStatus === 'loading') && <Loading />}
               <Link
                 style={{ color: movieIsGood || movieIsBad ? '#f82f62' : '#fff' }}
                 iconF7={rateIcon}
