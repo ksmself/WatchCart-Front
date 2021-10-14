@@ -153,7 +153,7 @@ const OrderIndexPage = ({ f7router }) => {
     <>
       {/* 입력 폼 */}
       <Page className="theme-dark">
-        <TopNavBar backLink optionName="주문 페이지" />
+        <TopNavBar backLink backLinkForce optionName="주문 페이지" />
         <Formik
           initialValues={initialValues}
           validationSchema={OrderSchema}
