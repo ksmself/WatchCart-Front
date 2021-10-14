@@ -31,8 +31,10 @@ const OrderSchema = Yup.object().shape({
 });
 
 const OrderIndexPage = ({ f7router }) => {
-  const { currentUser } = useAuth();
-  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id));
+  const { currentUser, isAuthenticated } = useAuth();
+  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id), {
+    enabled: isAuthenticated,
+  });
   const initialValues: FormValues = {
     receiver_name: '',
     receiver_phone: '',

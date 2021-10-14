@@ -14,7 +14,9 @@ import { User } from '@constants';
 
 const MyPage = ({ f7router }) => {
   const { currentUser, isAuthenticated, unAuthenticateUser } = useAuth();
-  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id));
+  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id), {
+    enabled: isAuthenticated,
+  });
 
   const logoutHandler = useCallback(async () => {
     try {

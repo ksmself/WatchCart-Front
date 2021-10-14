@@ -10,8 +10,10 @@ import { User } from '@constants';
 dayjs.locale('ko');
 
 const UserOrderList = () => {
-  const { currentUser } = useAuth();
-  const { data: userInfo, status, error } = useQuery<User>(`userInfo-${currentUser.id}`, getUser(currentUser.id));
+  const { currentUser, isAuthenticated } = useAuth();
+  const { data: userInfo, status, error } = useQuery<User>(`userInfo-${currentUser.id}`, getUser(currentUser.id), {
+    enabled: isAuthenticated,
+  });
 
   const [onlyOrder, setOnlyOrder] = useState(null);
   useEffect(() => {

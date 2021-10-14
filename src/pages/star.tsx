@@ -10,9 +10,11 @@ import Like from '@components/tab/Like';
 import { User } from '@constants';
 
 const StarPage = () => {
-  const { currentUser } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id));
+  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id), {
+    enabled: isAuthenticated,
+  });
 
   return (
     <Page className="theme-dark">
