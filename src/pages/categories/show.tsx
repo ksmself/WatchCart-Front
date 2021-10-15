@@ -38,7 +38,7 @@ const CategoryShowPage = ({ f7route }) => {
 
   const fetchRange = 4;
   const fetchCategory = async ({ pageParam = 1 }) => {
-    const data = await API.get(`/categories/${categoryId}/page/${pageParam}`);
+    const data = await API.get(`/categories/${categoryId}/page/${pageParam}${url}`);
     return { data, nextPage: pageParam + 1 };
   };
 
