@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Page, BlockTitle } from 'framework7-react';
-import { useQuery } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 import { Listbox } from '@headlessui/react';
 
 import TopNavBar from '@components/TopNavBar';
-import { getCategory } from '@api';
 import ColSwiper from '@components/Swiper/ColSwiper';
 import Loading from '@components/Loading';
 import SortSelect from '@components/SortSelect';
-import { Category } from '@constants';
+import { API } from '@api/api.config';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
 
 const CategoryShowPage = ({ f7route }) => {
   const categoryId = f7route.params.id;
@@ -36,33 +36,76 @@ const CategoryShowPage = ({ f7route }) => {
     }
   }, [selected]);
 
-  const { data: category, status, error } = useQuery<Category>(
-    `categories-${categoryId}-${url}`,
-    getCategory(categoryId, url),
-  );
+  const fetchRange = 4;
+  const fetchCategory = async ({ pageParam = 1 }) => {
+    const data = await API.get(`/categories/${categoryId}/page/${pageParam}`);
+    return { data, nextPage: pageParam + 1 };
+  };
+
+  const {
+    data: categoryItem,
+    error,
+    isSuccess,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(`categories-${categoryId}-${url}`, fetchCategory, {
+    getNextPageParam: (lastPage) => {
+      if (lastPage?.data?.data?.movies?.length < fetchRange) return undefined;
+      return lastPage.nextPage ?? false;
+    },
+  });
+
+  useEffect(() => {
+    fetchCategory(1);
+  }, []);
+
+  const loadMoreButtonRef = React.useRef();
+
+  useIntersectionObserver({
+    target: loadMoreButtonRef,
+    onIntersect: fetchNextPage,
+    enabled: hasNextPage,
+  });
 
   return (
     <Page className="theme-dark grid-demo">
       <TopNavBar backLink />
-      {status === 'loading' && (
+      {isFetching && (
         <div className="m-32">
           <Loading />
         </div>
       )}
-      {status === 'error' && <div>{error}</div>}
-      {category && (
+      {error && <div>{error}</div>}
+
+      {categoryItem && (
         <>
-          <BlockTitle className="pt-9 pb-6 px-3 font-bold text-lg text-center text-primary">
-            {category.title}
-          </BlockTitle>
-          <div className="flex justify-end pr-6 mb-5">
-            <Listbox value={selected} onChange={setSelected}>
-              {({ open }) => <SortSelect open={open} selected={selected} />}
-            </Listbox>
-          </div>
-          <ColSwiper item={category.movies} />
+          {isSuccess && (
+            <>
+              <BlockTitle className="pt-9 pb-6 px-3 font-bold text-lg text-center text-primary">
+                {categoryItem?.pages[0].data.data.title}
+              </BlockTitle>
+              <div className="flex justify-end pr-6 mb-5">
+                <Listbox value={selected} onChange={setSelected}>
+                  {({ open }) => <SortSelect open={open} selected={selected} />}
+                </Listbox>
+              </div>
+            </>
+          )}
+          {isSuccess && categoryItem.pages.map((page) => <ColSwiper item={page.data.data.movies} />)}
         </>
       )}
+      <div className="flex justify-center mb-10">
+        <button
+          ref={loadMoreButtonRef}
+          className="font-bold text-primary"
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          {isFetchingNextPage ? <Loading /> : hasNextPage ? 'Load More' : null}
+        </button>
+      </div>
     </Page>
   );
 };
