@@ -22,7 +22,7 @@
       "@styles/*": ["src/assets/styles/*"],
       "@hooks/*": ["src/common/hooks/*"],
       "@atoms/*": ["src/common/atoms/*"],
-      "@api": ["src/common/api/index"],
+      "@api/*": ["src/common/api/*"],
       "@config": ["src/common/config/index"],
       "@routes": ["src/common/routes/index"],
       "@pages/*": ["src/pages/*"],

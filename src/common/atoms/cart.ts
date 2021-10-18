@@ -1,5 +1,5 @@
 import { LineItem } from '@constants';
-import { atom, selector } from 'recoil';
+import { atom } from 'recoil';
 
 export const cartItemsState = atom<LineItem[]>({
   key: 'cartItemsState',

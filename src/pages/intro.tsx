@@ -5,10 +5,9 @@ import { useRecoilState } from 'recoil';
 
 import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
-import { API_URL } from '@api';
+import { API_URL, API } from '@api/api.config';
 import RowSwiper from '@components/Swiper/RowSwiper';
 import useAuth from '@hooks/useAuth';
-import { API } from '@api/api.config';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import Loading from '@components/Loading';
 import { uncompletedOrderState } from '@atoms/order';

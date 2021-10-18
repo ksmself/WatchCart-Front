@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import { sleep } from '@utils';
 import TopNavBar from '@components/TopNavBar';
 import OrderItem from '@components/OrderItem';
-import { API_URL, createOrder, getUser, updateLineItem, updateOrder } from '@api';
+import { API_URL, createOrder, getUser, updateLineItem, updateOrder } from '@api/index';
 import useAuth from '@hooks/useAuth';
 import { LineItem, User } from '@constants';
 import { cartItemsState } from '@atoms/cart';
@@ -188,9 +188,9 @@ const OrderIndexPage = ({ f7router }) => {
               }
 
               f7.dialog.close();
-            } catch (error) {
+            } catch (err) {
               f7.dialog.close();
-              f7.dialog.alert(error?.response?.data || error?.message);
+              f7.dialog.alert(err?.response?.data || err?.message);
             }
           }}
           validateOnMount

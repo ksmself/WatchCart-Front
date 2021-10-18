@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 
 import useAuth from '@hooks/useAuth';
 import { sleep } from '@utils';
-import { updateUser } from '@api';
+import { updateUser } from '@api/index';
 
 interface FormValues {
   name: string;

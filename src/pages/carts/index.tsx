@@ -3,7 +3,7 @@ import { f7, Page } from 'framework7-react';
 import { useRecoilState } from 'recoil';
 
 import TopNavBar from '@components/TopNavBar';
-import { API_URL } from '@api';
+import { API_URL } from '@api/api.config';
 import CartItem from '@components/cart/CartItem';
 import useAuth from '@hooks/useAuth';
 import { cartItemsState } from '@atoms/cart';

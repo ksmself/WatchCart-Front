@@ -2,7 +2,7 @@ import { useRecoilState } from 'recoil';
 import { AuthState, Token } from '@constants';
 import { getCurrentUserFromToken } from '@utils';
 import { destroyToken, saveToken } from '@store';
-import { authSelector } from '@selectors';
+import { authSelector } from '@selectors/index';
 
 const useAuth = () => {
   const [currentUser, setCurrentUser] = useRecoilState<AuthState>(authSelector);

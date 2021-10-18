@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { selector, selectorFamily } from 'recoil';
+import { selector } from 'recoil';
 import { AuthState } from '@constants';
-import { authState } from '@atoms';
+import { authState } from '@atoms/index';
 
 export const authSelector = selector({
   key: 'authSelector',

@@ -1,7 +1,7 @@
 import { Block, Col, Link, Row } from 'framework7-react';
 import React from 'react';
 
-import { API_URL } from '@api';
+import { API_URL } from '@api/index';
 
 const ColSwiper = ({ item }) => (
   <>

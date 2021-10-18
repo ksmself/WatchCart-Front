@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
-import { getCategories } from '@api';
+import { getCategories } from '@api/index';
 import Loading from '@components/Loading';
 import { Category } from '@constants';
 

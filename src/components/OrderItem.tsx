@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { API_URL } from '@api';
+import { API_URL } from '@api/api.config';
 
 const OrderItem = ({ item }) => (
   <div className="flex flex-row justify-between items-start mb-5">

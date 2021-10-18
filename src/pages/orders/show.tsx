@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Page } from 'framework7-react';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
 
 import TopNavBar from '@components/TopNavBar';
-import { API_URL, getOrder } from '@api';
+import { API_URL, getOrder } from '@api/index';
 import Loading from '@components/Loading';
 import { Order } from '@constants';
 

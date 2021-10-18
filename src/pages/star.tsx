@@ -4,7 +4,7 @@ import { Link, Page, Tab, Tabs, Toolbar } from 'framework7-react';
 import TopNavBar from '@components/TopNavBar';
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import { useQuery } from 'react-query';
-import { getUser } from '@api';
+import { getUser } from '@api/index';
 import useAuth from '@hooks/useAuth';
 import Like from '@components/tab/Like';
 import { User } from '@constants';

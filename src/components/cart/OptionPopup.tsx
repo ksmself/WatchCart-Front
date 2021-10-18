@@ -5,11 +5,12 @@ import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import { Popup, Page, Navbar, NavRight, Link, Stepper } from 'framework7-react';
 import { useRecoilState } from 'recoil';
 
-import { createLineItem, API_URL } from '@api';
+import { API_URL } from '@api/api.config';
+import { createLineItem } from '@api/index';
 import useAuth from '@hooks/useAuth';
 import { uncompletedOrderState } from '@atoms/order';
 import { cartItemsState } from '@atoms/cart';
-import { LineItem } from '@constants';
+import { Cart, LineItem } from '@constants';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');

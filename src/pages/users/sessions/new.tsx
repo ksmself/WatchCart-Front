@@ -1,4 +1,4 @@
-import { loginAPI } from '@api';
+import { loginAPI } from '@api/index';
 import TopNavBar from '@components/TopNavBar';
 import useAuth from '@hooks/useAuth';
 import { Formik, FormikHelpers } from 'formik';

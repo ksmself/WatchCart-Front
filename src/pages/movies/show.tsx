@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useQueryClient, useMutation, useQuery } from 'react-query';
 
 import TopNavBar from '@components/TopNavBar';
-import { API_URL, getMovie, isLiked, likeMovie, goodMovie, badMovie, isGood, isBad } from '@api';
+import { API_URL, getMovie, isLiked, likeMovie, goodMovie, badMovie, isGood, isBad } from '@api/index';
 import useAuth from '@hooks/useAuth';
 import Loading from '@components/Loading';
 import OptionPopup from '@components/cart/OptionPopup';

@@ -1,4 +1,4 @@
-import { signupAPI } from '@api';
+import { signupAPI } from '@api/index';
 import TopNavBar from '@components/TopNavBar';
 import useAuth from '@hooks/useAuth';
 import { getCurrentUserFromToken, sleep } from '@utils';
@@ -44,7 +44,7 @@ const SignUpPage = ({ f7router }) => {
 
   return (
     <Page className="theme-dark">
-      <TopNavBar backLink={true} />
+      <TopNavBar backLink />
       <Formik
         initialValues={initialValues}
         validationSchema={SignUpSchema}

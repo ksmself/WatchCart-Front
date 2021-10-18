@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Stepper } from 'framework7-react';
 import { useRecoilState } from 'recoil';
 import { useMutation } from 'react-query';
-import { API_URL, deleteLineItem, updateLineItem } from '@api';
+import { API_URL, deleteLineItem, updateLineItem } from '@api/index';
 import { cartItemsState } from '@atoms/cart';
 import { LineItem } from '@constants';
 

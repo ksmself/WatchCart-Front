@@ -28,6 +28,7 @@ export type Category = {
   id: number;
   title: string;
   movies: Movie[];
+  image_path: string;
 };
 
 export type Movie = {
@@ -87,6 +88,15 @@ export type Order = {
   updated_at: string;
   status: string;
   line_items: LineItem[];
+};
+
+export type Observer = {
+  root?: any;
+  target: any;
+  onIntersect: any;
+  threshold?: number;
+  rootMargin?: string;
+  enabled: boolean;
 };
 
 export interface Item extends DefaultProps {

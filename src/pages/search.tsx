@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Page } from 'framework7-react';
 import { useQuery } from 'react-query';
 
 import TopNavBar from '@components/TopNavBar';
 import useQueryDebounce from '@hooks/useQueryDebounce';
-import { getMoviesByKeyword } from '@api';
+import { getMoviesByKeyword } from '@api/index';
 import Loading from '@components/Loading';
 import ColSwiper from '@components/Swiper/ColSwiper';
 import { Movie } from '@constants';
