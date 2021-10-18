@@ -50,7 +50,7 @@ const DirectorShowPage = ({ f7route }) => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-  } = useInfiniteQuery(`categories-${directorId}-${url}`, fetchDirector, {
+  } = useInfiniteQuery(`directors-${directorId}-${url}`, fetchDirector, {
     getNextPageParam: (lastPage) => {
       if (lastPage?.data?.data?.movies?.length < fetchRange) return undefined;
       return lastPage.nextPage ?? false;

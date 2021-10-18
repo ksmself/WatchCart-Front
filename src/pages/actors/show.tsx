@@ -9,6 +9,7 @@ import { Listbox } from '@headlessui/react';
 import SortSelect from '@components/SortSelect';
 import { API } from '@api/api.config';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { Observer } from '@constants';
 
 const ActorShowPage = ({ f7route }) => {
   const actorId = f7route.params.id;
@@ -50,7 +51,7 @@ const ActorShowPage = ({ f7route }) => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-  } = useInfiniteQuery(`categories-${actorId}-${url}`, fetchActor, {
+  } = useInfiniteQuery(`actors-${actorId}-${url}`, fetchActor, {
     getNextPageParam: (lastPage) => {
       if (lastPage?.data?.data?.movies?.length < fetchRange) return undefined;
       return lastPage.nextPage ?? false;
@@ -63,11 +64,12 @@ const ActorShowPage = ({ f7route }) => {
 
   const loadMoreButtonRef = React.useRef();
 
-  useIntersectionObserver({
+  const obj: Observer = {
     target: loadMoreButtonRef,
     onIntersect: fetchNextPage,
     enabled: hasNextPage,
-  });
+  };
+  useIntersectionObserver(obj);
 
   return (
     <Page className="theme-dark">
