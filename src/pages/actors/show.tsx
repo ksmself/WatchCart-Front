@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BlockTitle, Page } from 'framework7-react';
-import { useQuery } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 
 import TopNavBar from '@components/TopNavBar';
-import { getActor } from '@api';
 import ColSwiper from '@components/Swiper/ColSwiper';
 import Loading from '@components/Loading';
 import { Listbox } from '@headlessui/react';
 import SortSelect from '@components/SortSelect';
-import { Actor } from '@constants';
+import { API } from '@api/api.config';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
 
 const ActorShowPage = ({ f7route }) => {
   const actorId = f7route.params.id;
@@ -36,28 +36,75 @@ const ActorShowPage = ({ f7route }) => {
     }
   }, [selected]);
 
-  const { data: actor, status, error } = useQuery<Actor>(`actor-${actorId}-${url}`, getActor(actorId, url));
+  const fetchRange = 4;
+  const fetchActor = async ({ pageParam = 1 }) => {
+    const data = await API.get(`/actors/${actorId}/page/${pageParam}${url}`);
+    return { data, nextPage: pageParam + 1 };
+  };
+
+  const {
+    data: actorItem,
+    error,
+    isSuccess,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(`categories-${actorId}-${url}`, fetchActor, {
+    getNextPageParam: (lastPage) => {
+      if (lastPage?.data?.data?.movies?.length < fetchRange) return undefined;
+      return lastPage.nextPage ?? false;
+    },
+  });
+
+  useEffect(() => {
+    fetchActor(1);
+  }, []);
+
+  const loadMoreButtonRef = React.useRef();
+
+  useIntersectionObserver({
+    target: loadMoreButtonRef,
+    onIntersect: fetchNextPage,
+    enabled: hasNextPage,
+  });
 
   return (
     <Page className="theme-dark">
       <TopNavBar backLink />
-      {status === 'loading' && (
+      {isFetching && (
         <div className="m-32">
           <Loading />
         </div>
       )}
-      {status === 'error' && <div>{error}</div>}
-      {actor && (
+      {error && <div>{error}</div>}
+      {actorItem && (
         <>
-          <BlockTitle className="pt-9 pb-6 px-3 font-bold text-lg text-center text-primary">{actor.name}</BlockTitle>
-          <div className="flex justify-end pr-6 mb-5">
-            <Listbox value={selected} onChange={setSelected}>
-              {({ open }) => <SortSelect open={open} selected={selected} />}
-            </Listbox>
-          </div>
-          <ColSwiper item={actor.movies} />
+          {isSuccess && (
+            <>
+              <BlockTitle className="pt-9 pb-6 px-3 font-bold text-lg text-center text-primary">
+                {actorItem?.pages[0].data.data.name}
+              </BlockTitle>
+              <div className="flex justify-end pr-6 mb-5">
+                <Listbox value={selected} onChange={setSelected}>
+                  {({ open }) => <SortSelect open={open} selected={selected} />}
+                </Listbox>
+              </div>
+            </>
+          )}
+          {isSuccess && actorItem.pages.map((page) => <ColSwiper item={page.data.data.movies} />)}
         </>
       )}
+      <div className="flex justify-center mb-10">
+        <button
+          ref={loadMoreButtonRef}
+          className="font-bold text-primary"
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          {isFetchingNextPage ? <Loading /> : hasNextPage ? 'Load More' : null}
+        </button>
+      </div>
     </Page>
   );
 };
