@@ -1,21 +1,42 @@
 import { Page, Toolbar, Icon, Tabs, Tab, Link } from 'framework7-react';
-import React, { useCallback, useState } from 'react';
-import { useQuery } from 'react-query';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useInfiniteQuery } from 'react-query';
 
-import { getUser, logoutAPI } from '@api';
+import { logoutAPI } from '@api/index';
 import BottomToolBarContent from '@components/BottomToolBarContent';
 import TopNavBar from '@components/TopNavBar';
 import useAuth from '@hooks/useAuth';
 import LoginForm from '@pages/users/sessions/new';
 import UserInfoEdit from '@components/user/UserInfoEdit';
-import Like from '@components/tab/Like';
 import UserOrderList from '@components/user/UserOrderList';
-import { User } from '@constants';
+import { Observer } from '@constants';
+import { API } from '@api/api.config';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import Loading from '@components/Loading';
+import ColSwiper from '@components/Swiper/ColSwiper';
 
 const MyPage = ({ f7router }) => {
   const { currentUser, isAuthenticated, unAuthenticateUser } = useAuth();
-  const { data: user, status, error } = useQuery<User>(`user-${currentUser?.id}`, getUser(currentUser?.id), {
-    enabled: isAuthenticated,
+
+  const fetchRange = 6;
+  const fetchLiked = async ({ pageParam = 1 }) => {
+    const data = await API.get(`/users/${currentUser.id}/liked_movies/page/${pageParam}`);
+    return { data, nextPage: pageParam + 1 };
+  };
+
+  const {
+    data: likedMovies,
+    error,
+    isSuccess,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery(`users-${currentUser.id}-rated`, fetchLiked, {
+    getNextPageParam: (lastPage) => {
+      if (lastPage?.data?.data?.liked_movies?.length < fetchRange) return undefined;
+      return lastPage.nextPage ?? false;
+    },
   });
 
   const logoutHandler = useCallback(async () => {
@@ -29,6 +50,19 @@ const MyPage = ({ f7router }) => {
   }, [unAuthenticateUser]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const loadMoreButtonRef = React.useRef();
+
+  const obj: Observer = {
+    target: loadMoreButtonRef,
+    onIntersect: fetchNextPage,
+    enabled: hasNextPage,
+  };
+  useIntersectionObserver(obj);
+
+  useEffect(() => {
+    fetchLiked(1);
+  }, []);
 
   return (
     <Page className="theme-dark">
@@ -87,7 +121,27 @@ const MyPage = ({ f7router }) => {
           {/* Tabs  */}
           <Tabs>
             <Tab id="tab-1" className="like-tab" tabActive>
-              <Like data={user?.liked_movies} status={status} error={error} />
+              {isFetching && (
+                <div className="m-32">
+                  <Loading />
+                </div>
+              )}
+              {error && <div>{error}</div>}
+
+              {likedMovies &&
+                isSuccess &&
+                likedMovies.pages.map((page) => <ColSwiper item={page.data.data.liked_movies} />)}
+
+              <div className="flex justify-center mb-10">
+                <button
+                  ref={loadMoreButtonRef}
+                  className="font-bold text-primary"
+                  onClick={() => fetchNextPage()}
+                  disabled={!hasNextPage || isFetchingNextPage}
+                >
+                  {isFetchingNextPage ? <Loading /> : hasNextPage ? 'Load More' : null}
+                </button>
+              </div>
             </Tab>
             <Tab id="tab-2">
               <div className="flex justify-center mt-24">
