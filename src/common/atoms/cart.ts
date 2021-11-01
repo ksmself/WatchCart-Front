@@ -5,3 +5,8 @@ export const cartItemsState = atom<LineItem[]>({
   key: 'cartItemsState',
   default: [],
 });
+
+export const quickItemsState = atom<LineItem[]>({
+  key: 'quickItemsState',
+  default: [],
+});

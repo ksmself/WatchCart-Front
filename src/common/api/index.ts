@@ -109,6 +109,11 @@ export const createLineItem = async (params) => {
   return data;
 };
 
+export const createQuickLineItem = async (params) => {
+  const data = await API.post('/lineitems/quick', { line_item: params });
+  return data;
+};
+
 export const updateLineItem = async (params) => {
   const data = await API.put(`/lineitems/${params.id}`, { line_item: params.line_item });
   return data;

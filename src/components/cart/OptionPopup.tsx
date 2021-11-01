@@ -6,11 +6,11 @@ import { Popup, Page, Navbar, NavRight, Link, Stepper } from 'framework7-react';
 import { useRecoilState } from 'recoil';
 
 import { API_URL } from '@api/api.config';
-import { createLineItem } from '@api/index';
+import { createLineItem, createQuickLineItem } from '@api/index';
 import useAuth from '@hooks/useAuth';
 import { uncompletedOrderState } from '@atoms/order';
-import { cartItemsState } from '@atoms/cart';
-import { Cart, LineItem } from '@constants';
+import { cartItemsState, quickItemsState } from '@atoms/cart';
+import { LineItem } from '@constants';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -29,12 +29,12 @@ const OptionPopup = ({ options, f7router }) => {
   const [price, setPrice] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
-  const [quick, setQuick] = useState(false);
   const [prevItems, setPrevItems] = useState([]);
 
   const { currentUser } = useAuth();
   const [uncompletedOrderId, setUncompletedOrderId] = useRecoilState<number>(uncompletedOrderState);
   const [cartItems, setCartItems] = useRecoilState<LineItem[]>(cartItemsState);
+  const [quickItems, setQuickItems] = useRecoilState<LineItem[]>(quickItemsState);
 
   useEffect(() => {
     const getUncompletedOrderId = async () => {
@@ -63,10 +63,17 @@ const OptionPopup = ({ options, f7router }) => {
       console.log(error);
     },
     onSuccess: (data) => {
-      if (!quick) setShowModal(true);
-      if (quick) {
-        setShowOrderModal(true);
-      }
+      setShowModal(true);
+    },
+  });
+
+  const sendQuick = useMutation((params) => createQuickLineItem(params), {
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      setQuickItems(data.data);
+      setShowOrderModal(true);
     },
   });
 
@@ -75,9 +82,13 @@ const OptionPopup = ({ options, f7router }) => {
     await sendCart.mutateAsync(newValue);
   }, [cart]);
 
+  const sendToQuick = useCallback(async () => {
+    const newValue = await Promise.all(Object.entries(cart).map((v) => v[1]));
+    await sendQuick.mutateAsync(newValue);
+  }, [cart]);
+
   const onClickQuick = useCallback(() => {
-    setQuick(true);
-    sendToCart();
+    sendToQuick();
   }, [cart]);
 
   /** 선택된 option 카트에 넣기 */
@@ -294,39 +305,20 @@ const OptionPopup = ({ options, f7router }) => {
                       />
                     </div>
 
-                    {prevItems.length > 0 ? (
-                      <>
-                        <div className="mt-3 mb-6 px-1 text-sm text-white">
-                          장바구니에 담긴 상품이 있습니다. 장바구니로 이동하시겠습니까?
-                        </div>
-                        <Link
-                          className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
-                          onClick={() => {
-                            setShowOrderModal(false);
-                            f7router.navigate('/carts');
-                            setCart({});
-                          }}
-                          popupClose
-                        >
-                          장바구니 바로가기
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <div className="mb-6 text-sm">바로 구매하러 가시겠습니까?</div>
-                        <Link
-                          className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
-                          onClick={() => {
-                            setShowOrderModal(false);
-                            f7router.navigate('/orders');
-                            setCart({});
-                          }}
-                          popupClose
-                        >
-                          바로 구매하기
-                        </Link>
-                      </>
-                    )}
+                    <>
+                      <div className="mb-6 text-sm">바로 구매하러 가시겠습니까?</div>
+                      <Link
+                        className="px-7 py-3 text-base font-bold text-white bg-indigo-500 rounded-lg"
+                        onClick={() => {
+                          setShowOrderModal(false);
+                          f7router.navigate('/orders');
+                          setCart({});
+                        }}
+                        popupClose
+                      >
+                        바로 구매하기
+                      </Link>
+                    </>
                   </div>
                 )}
               </div>

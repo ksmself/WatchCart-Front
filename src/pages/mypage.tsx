@@ -20,8 +20,10 @@ const MyPage = ({ f7router }) => {
 
   const fetchRange = 6;
   const fetchLiked = async ({ pageParam = 1 }) => {
-    const data = await API.get(`/users/${currentUser.id}/liked_movies/page/${pageParam}`);
-    return { data, nextPage: pageParam + 1 };
+    if (isAuthenticated) {
+      const data = await API.get(`/users/${currentUser?.id}/liked_movies/page/${pageParam}`);
+      return { data, nextPage: pageParam + 1 };
+    }
   };
 
   const {
@@ -32,7 +34,7 @@ const MyPage = ({ f7router }) => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-  } = useInfiniteQuery(`users-${currentUser.id}-rated`, fetchLiked, {
+  } = useInfiniteQuery(`users-${currentUser?.id}-rated`, fetchLiked, {
     getNextPageParam: (lastPage) => {
       if (lastPage?.data?.data?.liked_movies?.length < fetchRange) return undefined;
       return lastPage.nextPage ?? false;
